@@ -611,19 +611,19 @@ struct MenuBarLayoutEditor: View {
             activate: {
                 self.write(MenuBarLayoutEditorMutations.append(.conditional(id: conditional.id), to: self.layout))
             })
-        .contextMenu {
-            Button(L("menu_bar_layout_conditional_edit")) {
-                self.conditionalDraft = MenuBarLayoutConditionalDraft(
-                    mode: .edit(conditional.id),
-                    conditional: conditional)
+            .contextMenu {
+                Button(L("menu_bar_layout_conditional_edit")) {
+                    self.conditionalDraft = MenuBarLayoutConditionalDraft(
+                        mode: .edit(conditional.id),
+                        conditional: conditional)
+                }
+                Button(L("menu_bar_layout_conditional_duplicate")) {
+                    self.duplicateConditional(conditional)
+                }
+                Button(L("menu_bar_layout_conditional_remove"), role: .destructive) {
+                    self.settings.removeMenuBarLayoutConditional(id: conditional.id)
+                }
             }
-            Button(L("menu_bar_layout_conditional_duplicate")) {
-                self.duplicateConditional(conditional)
-            }
-            Button(L("menu_bar_layout_conditional_remove"), role: .destructive) {
-                self.settings.removeMenuBarLayoutConditional(id: conditional.id)
-            }
-        }
     }
 
     private func duplicateConditional(_ conditional: MenuBarLayoutConditional) {

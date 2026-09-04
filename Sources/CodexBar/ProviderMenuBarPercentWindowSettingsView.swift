@@ -12,17 +12,23 @@ struct ProviderMenuBarPercentWindowSettingsView: View {
 
     var body: some View {
         let layout = self.settings.menuBarLayoutResolution(for: self.provider).layout
-        if MenuBarPercentWindowPreference.hasPercentToken(in: layout) {
+        let available = MenuBarPercentWindowPreference.available(for: self.provider)
+        if MenuBarPercentWindowPreference.isVisible(
+            iconStyle: self.settings.menuBarIconStyle,
+            layout: layout,
+            available: available)
+        {
             let current = MenuBarPercentWindowPreference.current(in: layout)
+            let selection = current.flatMap { available.contains($0) ? $0 : nil }
             Section {
-                Picker(L("menu_bar_metric_title"), selection: self.binding(layout: layout, current: current)) {
-                    if current == nil {
+                Picker(L("menu_bar_metric_title"), selection: self.binding(layout: layout, current: selection)) {
+                    if selection == nil {
                         // Mixed windows (e.g. Session · Weekly) are only describable in the layout
                         // editor; surface that instead of pretending one option is selected.
                         Text(L("menu_bar_layout_preset_custom"))
                             .tag(MenuBarPercentWindowPreference?.none)
                     }
-                    ForEach(MenuBarPercentWindowPreference.allCases) { preference in
+                    ForEach(available) { preference in
                         Text(preference.label).tag(MenuBarPercentWindowPreference?.some(preference))
                     }
                 }
@@ -44,8 +50,9 @@ struct ProviderMenuBarPercentWindowSettingsView: View {
             get: { current },
             set: { preference in
                 guard let preference else { return }
-                MenuBarLayoutEditorPersistence.activate(
-                    preference.applied(to: layout),
+                MenuBarPercentWindowPreference.persist(
+                    preference,
+                    appliedTo: layout,
                     for: self.provider,
                     settings: self.settings)
             })

@@ -1,3 +1,4 @@
+import CodexBarCore
 import Foundation
 import Testing
 @testable import CodexBar
@@ -57,5 +58,92 @@ struct MenuBarPercentWindowPreferenceTests {
         let backToAutomatic = MenuBarPercentWindowPreference.automatic.applied(to: weekly)
 
         #expect(backToAutomatic == original)
+    }
+
+    @Test
+    func `picker stays hidden unless the global style is icon and percent`() {
+        let layout = MenuBarLayout(lines: [[.icon, .percent(window: .automatic)]])
+        let options = MenuBarPercentWindowPreference.allCases
+
+        #expect(MenuBarPercentWindowPreference.isVisible(
+            iconStyle: .iconAndPercent,
+            layout: layout,
+            available: options))
+        #expect(MenuBarPercentWindowPreference.isVisible(
+            iconStyle: .critters,
+            layout: layout,
+            available: options) == false)
+        #expect(MenuBarPercentWindowPreference.isVisible(
+            iconStyle: .bars,
+            layout: layout,
+            available: options) == false)
+        #expect(MenuBarPercentWindowPreference.isVisible(
+            iconStyle: .iconAndPercent,
+            layout: MenuBarLayout(lines: [[.icon]]),
+            available: options) == false)
+    }
+
+    @Test
+    func `picker hides when session and weekly cannot apply`() {
+        let layout = MenuBarLayout(lines: [[.icon, .percent(window: .automatic)]])
+        let automaticOnly = MenuBarPercentWindowPreference.available(
+            metrics: ProviderMenuBarMetricCapabilities(supported: [.automatic, .monthlyPlan]))
+
+        #expect(automaticOnly == [.automatic])
+        #expect(MenuBarPercentWindowPreference.isVisible(
+            iconStyle: .iconAndPercent,
+            layout: layout,
+            available: automaticOnly) == false)
+        #expect(MenuBarPercentWindowPreference.isVisible(
+            iconStyle: .iconAndPercent,
+            layout: layout,
+            available: [.automatic, .session]))
+    }
+
+    @Test
+    func `available options follow provider percent-window capabilities`() {
+        let mistralLike = ProviderMenuBarMetricCapabilities(supported: [.automatic, .monthlyPlan])
+        #expect(MenuBarPercentWindowPreference.available(metrics: mistralLike) == [.automatic])
+
+        let sessionOnlyPrimary = ProviderMenuBarMetricCapabilities(supported: [.automatic, .primary])
+        #expect(MenuBarPercentWindowPreference.available(metrics: sessionOnlyPrimary) == [.automatic, .session])
+
+        let weeklyPrimary = ProviderMenuBarMetricCapabilities(supported: [.automatic, .primary])
+        #expect(MenuBarPercentWindowPreference.available(
+            metrics: weeklyPrimary,
+            primarySemanticWindow: .weekly) == [.automatic, .weekly])
+
+        #expect(MenuBarPercentWindowPreference.available(
+            metrics: .standard) == [.automatic, .session, .weekly])
+        #expect(MenuBarPercentWindowPreference.available(for: .mistral) == [.automatic])
+        #expect(MenuBarPercentWindowPreference.available(for: .openrouter) == [.automatic, .session])
+        #expect(MenuBarPercentWindowPreference.available(for: .codex) == [.automatic, .session, .weekly])
+        #expect(MenuBarPercentWindowPreference.isVisible(
+            iconStyle: .iconAndPercent,
+            layout: MenuBarLayout(lines: [[.icon, .percent(window: .automatic)]]),
+            provider: .mistral) == false)
+    }
+
+    @Test
+    @MainActor
+    func `persisting a provider window does not flip the global icon style`() {
+        let settings = testSettingsStore(
+            suiteName: "MenuBarPercentWindowPreferenceTests-preserve-style")
+        settings.menuBarIconStyle = .critters
+        let layout = MenuBarLayout(lines: [[.icon, .percent(window: .automatic)]])
+        settings.setMenuBarLayout(layout, for: .claude)
+
+        MenuBarPercentWindowPreference.persist(
+            .session,
+            appliedTo: layout,
+            for: .claude,
+            settings: settings)
+
+        #expect(settings.menuBarIconStyle == .critters)
+        #expect(MenuBarPercentWindowPreference.current(in: settings.menuBarLayout(for: .claude)) == .session)
+        #expect(settings.menuBarLayoutOverrides[.claude] == MenuBarLayout(lines: [[
+            .icon,
+            .percent(window: .session),
+        ]]))
     }
 }

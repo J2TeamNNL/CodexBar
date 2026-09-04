@@ -222,6 +222,7 @@
 "No credits history data." = "Non hai datos de historial de créditos.";
 "No data available" = "Non hai datos dispoñibles";
 "No data yet" = "Aínda non hai datos";
+"Workspaces" = "Espazos de traballo";
 "No enabled providers available for Overview." = "Non hai provedores activados dispoñibles para o Resumo.";
 "No providers selected" = "Non se seleccionou ningún provedor";
 "No token accounts yet." = "Aínda non hai contas con token.";
@@ -637,6 +638,8 @@
 "section_keyboard_shortcut" = "Atallo de teclado";
 "open_menu_shortcut_title" = "Abrir o menú";
 "open_menu_shortcut_subtitle" = "Abre o menú da barra de menús desde calquera lugar.";
+"record_shortcut" = "Gravar atallo";
+"press_shortcut" = "Preme o atallo";
 "install_cli" = "Instalar a CLI";
 "install_cli_subtitle" = "Crea un enlace simbólico de CodexBarCLI a /usr/local/bin e /opt/homebrew/bin como codexbar.";
 "cli_not_found" = "Non se atopou CodexBarCLI no paquete da aplicación.";
@@ -647,6 +650,9 @@
 "surprise_me_subtitle" = "Actívao se che gusta que os teus axentes se divirtan aí arriba.";
 "hide_personal_info_title" = "Ocultar información persoal";
 "hide_personal_info_subtitle" = "Oculta os enderezos de correo na barra de menús e na interface do menú.";
+"hide_cost_history_identity_subtitle" = "Oculta tamén os nomes e rutas de proxectos e fontes no historial de custos, sen modificar os datos gardados.";
+"Project %d" = "Proxecto %d";
+"Source %d" = "Fonte %d";
 "show_provider_storage_usage_title" = "Amosar o uso de almacenamento do provedor";
 "show_provider_storage_usage_subtitle" = "Amosa o uso do disco local nos menús. Analiza en segundo plano as rutas coñecidas do provedor.";
 "section_keychain_access" = "Acceso ao Chaveiro";
@@ -1370,6 +1376,9 @@
 "menu_bar_layout_preset_compact_stacked" = "Amontoado compacto";
 "menu_bar_layout_preset_custom" = "Personalizado";
 "menu_bar_layout_live_preview" = "Vista previa en directo";
+"menu_bar_layout_default_preview" = "Vista previa do deseño predeterminado";
+"menu_bar_layout_overrides_notice" = "Estes provedores activados usan os seus propios deseños gardados:";
+"menu_bar_layout_use_all_accessibility" = "%@: Usar o deseño de todos os provedores";
 "menu_bar_layout_strip" = "Franxa da barra de menús";
 "menu_bar_layout_remove_line_break" = "Retirar salto de liña";
 "menu_bar_layout_chip_hint" = "Selecciona, arrastra para reordenar ou usa a acción Retirar.";
@@ -1377,6 +1386,7 @@
 "menu_bar_layout_empty_line" = "Solta unha ficha aquí";
 "menu_bar_layout_line" = "Liña %d";
 "menu_bar_layout_drag_remove" = "Arrastra aquí para retirar";
+"menu_bar_layout_remove_selected" = "Retirar a selección";
 "menu_bar_layout_size" = "Tamaño";
 "menu_bar_layout_size_small" = "Pequeno";
 "menu_bar_layout_size_regular" = "Normal";
@@ -1436,6 +1446,7 @@
 "More" = "Máis";
 
 /* Provider Plugins */
+"Plugins" = "Plugins";
 "Install…" = "Instalar…";
 "Install plugin" = "Instalar complemento";
 "Copies a JavaScript or TypeScript file into the plugins directory." = "Copia un ficheiro JavaScript ou TypeScript no directorio de complementos.";
@@ -1477,6 +1488,7 @@
 "Total usage" = "Uso total";
 "claude_oauth_keychain_access_revoked" = "O acceso ao chaveiro de Claude foi revogado pola rotación do token de Claude Code. Preme Actualizar para volver conceder o acceso ou cambia a orixe de uso de Claude a CLI/Web.";
 "claude_showing_last_known_usage" = "Mostrando o último uso coñecido, capturado %@.";
+"claude_limited_usage_detail" = "Detalles de uso limitados";
 /* Spend dashboard cost analysis */
 "90d" = "90d";
 "Input" = "Input";
@@ -1531,3 +1543,4 @@
 "menu_bar_layout_conditional_default_session_spent" = "Sesión case esgotada";
 "menu_bar_layout_conditional_default_either_high" = "Sesión ou semana en nivel alto";
 "menu_bar_layout_conditional_default_scoped_weekly" = "Semana por modelo por riba do 60 %";
+"Spending cap, not balance" = "Límite de gasto, non saldo";

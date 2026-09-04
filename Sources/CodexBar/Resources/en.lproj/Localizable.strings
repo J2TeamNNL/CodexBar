@@ -8,6 +8,7 @@
 "ollama_browser_cookie_decryption_disabled" = "%@ cookie decryption is disabled in CodexBar; enable Keychain access and refresh.";
 "claude_oauth_keychain_access_revoked" = "Claude Keychain access was revoked by Claude Code's token rotation. Click Refresh to re-grant access, or switch Claude Usage source to CLI/Web.";
 "claude_showing_last_known_usage" = "Showing last-known usage captured %@.";
+"claude_limited_usage_detail" = "Limited usage detail";
 
 " providers" = " providers";
 "(System)" = "(System)";
@@ -204,6 +205,7 @@
 "No cost history data." = "No cost history data.";
 "No data available" = "No data available";
 "No data yet" = "No data yet";
+"Workspaces" = "Workspaces";
 "No enabled providers available for Overview." = "No enabled providers available for Overview.";
 "No providers selected" = "No providers selected";
 "No token accounts yet." = "No token accounts yet.";
@@ -644,6 +646,8 @@
 "section_keyboard_shortcut" = "Keyboard shortcut";
 "open_menu_shortcut_title" = "Open menu";
 "open_menu_shortcut_subtitle" = "Trigger the menu bar menu from anywhere.";
+"record_shortcut" = "Record Shortcut";
+"press_shortcut" = "Press Shortcut";
 "install_cli" = "Install CLI";
 "install_cli_subtitle" = "Symlink CodexBarCLI to /usr/local/bin and /opt/homebrew/bin as codexbar.";
 "cli_not_found" = "CodexBarCLI not found in app bundle.";
@@ -654,6 +658,9 @@
 "surprise_me_subtitle" = "Check if you like your agents having some fun up there.";
 "hide_personal_info_title" = "Hide personal information";
 "hide_personal_info_subtitle" = "Obscure email addresses in the menu bar and menu UI.";
+"hide_cost_history_identity_subtitle" = "Also hide cost-history project/source names and paths without changing stored data.";
+"Project %d" = "Project %d";
+"Source %d" = "Source %d";
 "show_provider_storage_usage_title" = "Show provider storage usage";
 "show_provider_storage_usage_subtitle" = "Show local disk usage in menus. Scans known provider-owned paths in the background.";
 "section_keychain_access" = "Keychain access";
@@ -1376,6 +1383,9 @@
 "menu_bar_layout_preset_compact_stacked" = "Compact stacked";
 "menu_bar_layout_preset_custom" = "Custom";
 "menu_bar_layout_live_preview" = "Live preview";
+"menu_bar_layout_default_preview" = "Default layout preview";
+"menu_bar_layout_overrides_notice" = "These enabled providers use their own saved layouts:";
+"menu_bar_layout_use_all_accessibility" = "%@: Use all-providers layout";
 "menu_bar_layout_strip" = "Menu bar strip";
 "menu_bar_layout_remove_line_break" = "Remove line break";
 "menu_bar_layout_chip_hint" = "Select, drag to reorder, or use the Remove action.";
@@ -1383,6 +1393,7 @@
 "menu_bar_layout_empty_line" = "Drop a token here";
 "menu_bar_layout_line" = "Line %d";
 "menu_bar_layout_drag_remove" = "Drag here to remove";
+"menu_bar_layout_remove_selected" = "Remove selected";
 "menu_bar_layout_size" = "Size";
 "menu_bar_layout_size_small" = "Small";
 "menu_bar_layout_size_regular" = "Regular";
@@ -1465,6 +1476,7 @@
 "More" = "More";
 
 /* Provider Plugins */
+"Plugins" = "Plugins";
 "Install…" = "Install…";
 "Install plugin" = "Install plugin";
 "Copies a JavaScript or TypeScript file into the plugins directory." = "Copies a JavaScript or TypeScript file into the plugins directory.";
@@ -1535,3 +1547,4 @@
 "menu_bar_layout_conditional_default_session_spent" = "Session nearly spent";
 "menu_bar_layout_conditional_default_either_high" = "Session or weekly running high";
 "menu_bar_layout_conditional_default_scoped_weekly" = "Scoped weekly over 60% used";
+"Spending cap, not balance" = "Spending cap, not balance";

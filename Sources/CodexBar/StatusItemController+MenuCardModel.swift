@@ -21,7 +21,8 @@ extension StatusItemController {
         historySelectionOverride: PlanUtilizationHistorySelection? = nil,
         planOverride: String? = nil,
         subtitleOverride: String? = nil,
-        sourceLabelOverride: String? = nil) -> UsageMenuCardView.Model?
+        sourceLabelOverride: String? = nil,
+        creditsOverride: CreditsSnapshot? = nil) -> UsageMenuCardView.Model?
     {
         // Provider-specific by design: Codex is the historical card fallback when no enabled provider is available.
         let target = provider ?? self.store.enabledFirstPartyProvidersForDisplay().first ?? .codex
@@ -49,6 +50,7 @@ extension StatusItemController {
             surface: surface,
             snapshotOverride: snapshotOverride,
             errorOverride: errorOverride,
+            creditsOverride: surface == .overrideCard ? creditsOverride : nil,
             now: now)
         let credits: CreditsSnapshot?
         let creditsError: String?
@@ -162,6 +164,7 @@ extension StatusItemController {
             paceVisible: self.settings.paceVisible,
             usesLiveSubtitle: surface == .liveCard,
             preferredCurrencyCode: self.settings.preferredCurrencyCode,
+            costUsageBucketCalendar: self.settings.costUsageBucketCalendar,
             now: now)
         return UsageMenuCardView.Model.make(input)
     }
@@ -221,10 +224,18 @@ extension StatusItemController {
         let weeklyPace = if let codexProjection,
                             let weekly = codexProjection.rateWindow(for: .weekly)
         {
-            self.store.weeklyPace(provider: target, window: weekly, now: now)
+            self.store.weeklyPace(
+                provider: target,
+                window: weekly,
+                dataConfidence: snapshot?.dataConfidence ?? .unknown,
+                now: now)
         } else {
             paceWindow.flatMap { window in
-                self.store.weeklyPace(provider: target, window: window, now: now)
+                self.store.weeklyPace(
+                    provider: target,
+                    window: window,
+                    dataConfidence: snapshot?.dataConfidence ?? .unknown,
+                    now: now)
             }
         }
         let forecast: SessionEquivalentForecast? = if let codexProjection,

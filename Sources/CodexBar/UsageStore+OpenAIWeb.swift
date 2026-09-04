@@ -257,10 +257,15 @@ extension UsageStore {
             self.openAIDashboardRequiresLogin = false
 
             // Provider-specific by design: an authorized OpenAI dashboard attaches metadata/backfill to Codex usage.
+            let dashboardCredits = decision.allowedEffects.contains(.creditsAttachment)
+                ? dashboard.toCreditsSnapshot()
+                : nil
             if let currentUsage = self.snapshots[.codex] {
-                self.snapshots[.codex] = currentUsage.withSubscriptionMetadata(
-                    expiresAt: dashboard.subscriptionExpiresAt,
-                    renewsAt: dashboard.subscriptionRenewsAt)
+                self.snapshots[.codex] = CodexExtraUsageCost.attaching(
+                    to: currentUsage.withSubscriptionMetadata(
+                        expiresAt: dashboard.subscriptionExpiresAt,
+                        renewsAt: dashboard.subscriptionRenewsAt),
+                    credits: dashboardCredits)
             }
 
             if decision.allowedEffects.contains(.usageBackfill),
@@ -269,7 +274,9 @@ extension UsageStore {
                let usage = dashboard.toUsageSnapshot(provider: .codex, accountEmail: attachedAccountEmail),
                CodexWeeklyResetConfirmation.initialDecision(previous: nil, initial: usage) == .publishInitial
             {
-                self.snapshots[.codex] = usage
+                self.snapshots[.codex] = CodexExtraUsageCost.attaching(
+                    to: usage,
+                    credits: dashboardCredits)
                 self.errors[.codex] = nil
                 self.failureGates[.codex]?.recordSuccess()
                 self.lastSourceLabels[.codex] = "openai-web"
@@ -278,20 +285,22 @@ extension UsageStore {
                     allowLastKnownLiveFallback: false)
             }
 
+            if decision.allowedEffects.contains(.refreshGuardSeed) {
+                self.seedCodexAccountScopedRefreshGuard(accountEmail: attachedAccountEmail)
+            }
+
             if decision.allowedEffects.contains(.creditsAttachment),
                self.credits == nil,
-               let credits = dashboard.toCreditsSnapshot()
+               let credits = dashboardCredits
             {
+                let ownerGuard = self.lastCodexAccountScopedRefreshGuard
                 self.credits = credits
                 self.lastCreditsSnapshot = credits
-                self.lastCreditsSnapshotAccountKey = Self.normalizeCodexAccountScopedKey(attachedAccountEmail)
+                self.lastCreditsSnapshotAccountKey = ownerGuard?.accountKey
+                self.lastCreditsSnapshotOwnerGuard = ownerGuard
                 self.lastCreditsSource = .dashboardWeb
                 self.lastCreditsError = nil
                 self.creditsFailureStreak = 0
-            }
-
-            if decision.allowedEffects.contains(.refreshGuardSeed) {
-                self.seedCodexAccountScopedRefreshGuard(accountEmail: attachedAccountEmail)
             }
 
             if let attachedAccountEmail, !attachedAccountEmail.isEmpty {
@@ -360,6 +369,7 @@ extension UsageStore {
         self.lastCreditsError = nil
         self.lastCreditsSnapshot = nil
         self.lastCreditsSnapshotAccountKey = nil
+        self.lastCreditsSnapshotOwnerGuard = nil
         self.lastCreditsSource = .none
         self.creditsFailureStreak = 0
     }

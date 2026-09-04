@@ -224,6 +224,7 @@
 "No cost history data." = "بيانات تاريخ مجانية.";
 "No data available" = "لا توجد بيانات متاحة";
 "No data yet" = "لا توجد بيانات حتى الآن";
+"Workspaces" = "مساحات العمل";
 "No enabled providers available for Overview." = "لا يوجد مزودون مفعلون متاحون للنظرة العامة.";
 "No providers selected" = "لم يتم اختيار أي مقدمي خدمة";
 "No token accounts yet." = "لا توجد حسابات رمزية حتى الآن.";
@@ -664,6 +665,8 @@
 "section_keyboard_shortcut" = "اختصار لوحة المفاتيح";
 "open_menu_shortcut_title" = "قائمة مفتوحة";
 "open_menu_shortcut_subtitle" = "فعل قائمة شريط القوائم من أي مكان.";
+"record_shortcut" = "سجل اختصاراً";
+"press_shortcut" = "اضغط على الاختصار";
 "install_cli" = "تثبيت CLI";
 "install_cli_subtitle" = "Symlink CodexBarCLI إلى /usr/local/bin و /opt/homebrew/bin ك codexbar.";
 "cli_not_found" = "CodexBarCLI غير موجود في حزمة التطبيقات.";
@@ -674,6 +677,9 @@
 "surprise_me_subtitle" = "تحقق إذا كنت تحب وكلائنك يستمتعون هناك.";
 "hide_personal_info_title" = "إخفاء المعلومات الشخصية";
 "hide_personal_info_subtitle" = "عناوين بريد إلكتروني غامضة في شريط القائمة وواجهة القائمة.";
+"hide_cost_history_identity_subtitle" = "إخفاء أسماء المشاريع والمصادر ومساراتها في سجل التكاليف أيضًا، دون تغيير البيانات المخزنة.";
+"Project %d" = "المشروع %d";
+"Source %d" = "المصدر %d";
 "show_provider_storage_usage_title" = "عرض استخدام التخزين لمزود الخدمة";
 "show_provider_storage_usage_subtitle" = "عرض استخدام القرص المحلي في القوائم. يمسح المسارات المعروفة المملوكة لمزود الخدمة في الخلفية.";
 "section_keychain_access" = "Keychain الوصول";
@@ -1374,6 +1380,9 @@
 "menu_bar_layout_preset_compact_stacked" = "مكدّس مضغوط";
 "menu_bar_layout_preset_custom" = "العرف";
 "menu_bar_layout_live_preview" = "معاينة مباشرة";
+"menu_bar_layout_default_preview" = "معاينة التخطيط الافتراضي";
+"menu_bar_layout_overrides_notice" = "يستخدم هؤلاء المزوّدون المفعّلون تخطيطاتهم المحفوظة الخاصة:";
+"menu_bar_layout_use_all_accessibility" = "%@: استخدام تخطيط جميع المزوّدين";
 "menu_bar_layout_strip" = "شريط القوائم";
 "menu_bar_layout_remove_line_break" = "إزالة فاصل السطر";
 "menu_bar_layout_chip_hint" = "حدّد أو اسحب لإعادة الترتيب أو استخدم إجراء الإزالة.";
@@ -1381,6 +1390,7 @@
 "menu_bar_layout_empty_line" = "أفلت عنصراً هنا";
 "menu_bar_layout_line" = "السطر %d";
 "menu_bar_layout_drag_remove" = "اسحب هنا للإزالة";
+"menu_bar_layout_remove_selected" = "إزالة المحدد";
 "menu_bar_layout_size" = "الحجم";
 "menu_bar_layout_size_small" = "صغير";
 "menu_bar_layout_size_regular" = "عادي";
@@ -1440,6 +1450,7 @@
 "More" = "أكثر";
 
 /* Provider Plugins */
+"Plugins" = "Plugins";
 "Install…" = "تثبيت…";
 "Install plugin" = "تثبيت إضافة";
 "Copies a JavaScript or TypeScript file into the plugins directory." = "ينسخ ملف JavaScript أو TypeScript إلى مجلد الإضافات.";
@@ -1481,6 +1492,7 @@
 "Total usage" = "إجمالي الاستخدام";
 "claude_oauth_keychain_access_revoked" = "تم إلغاء وصول CodexBar إلى سلسلة مفاتيح Claude بسبب تدوير الرمز المميز في Claude Code. انقر على «تحديث» لمنح الوصول مجددًا، أو بدّل مصدر استخدام Claude إلى CLI/Web.";
 "claude_showing_last_known_usage" = "يتم عرض آخر بيانات استخدام معروفة، تم التقاطها %@.";
+"claude_limited_usage_detail" = "تفاصيل الاستخدام محدودة";
 /* Spend dashboard cost analysis */
 "90d" = "90d";
 "Input" = "Input";
@@ -1536,3 +1548,4 @@
 "menu_bar_layout_conditional_default_session_spent" = "الجلسة على وشك النفاد";
 "menu_bar_layout_conditional_default_either_high" = "الجلسة أو الأسبوع في مستوى مرتفع";
 "menu_bar_layout_conditional_default_scoped_weekly" = "نافذة الطراز الأسبوعية فوق 60٪";
+"Spending cap, not balance" = "حد الإنفاق، وليس الرصيد";

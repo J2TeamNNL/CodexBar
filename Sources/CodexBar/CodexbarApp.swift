@@ -64,7 +64,7 @@ struct CodexBarApp: App {
                 "built": buildTimestamp,
             ])
 
-        KeychainAccessGate.isDisabled = UserDefaults.standard.bool(forKey: "debugDisableKeychainAccess")
+        KeychainAccessGate.isDisabled = SettingsStore.loadDebugDisableKeychainAccess(userDefaults: .standard)
         KeychainPromptCoordinator.install()
         if MainThreadHangWatchdog.isEnabledForCurrentProcess {
             MainThreadHangWatchdog.shared.start()
@@ -109,6 +109,11 @@ struct CodexBarApp: App {
             EmptyView()
         }
         .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button(L("About CodexBar")) {
+                    self.appDelegate.openSettings(pane: .about)
+                }
+            }
             CommandGroup(replacing: .appSettings) {
                 Button(self.settingsMenuTitle) {
                     self.appDelegate.openSettings(pane: nil)

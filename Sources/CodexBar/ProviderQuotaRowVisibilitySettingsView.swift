@@ -26,7 +26,10 @@ struct ProviderQuotaRowVisibilitySettingsView: View {
                     .listRowSeparator(.hidden)
                 }
 
-                if !self.settings.hiddenQuotaRowIDs(for: self.provider).isEmpty {
+                if QuotaRowVisibilityListing.hasIndependentlyHiddenRows(
+                    listed: rows,
+                    hiddenIDs: self.settings.hiddenQuotaRowIDs(for: self.provider))
+                {
                     Button(L("quota_rows_show_all")) {
                         self.settings.showAllQuotaRows(for: self.provider)
                     }
@@ -42,25 +45,14 @@ struct ProviderQuotaRowVisibilitySettingsView: View {
         }
     }
 
-    /// Rows the provider currently reports, plus any still-hidden row it stopped reporting so the
-    /// user can always undo a hide from this pane.
+    /// Rows the provider currently reports that family gates still allow, plus any still-hidden row
+    /// it stopped reporting so the user can undo a hide. Family-gated extras (Spark, Daily Routines,
+    /// optional credits, Copilot extras) stay off this list — the family toggle owns them.
     private var rows: [NamedRateWindow] {
-        let reported = self.store.snapshot(for: self.provider.instanceID)?.extraRateWindows ?? []
-        var seen = Set(reported.map(\.id))
-        var rows = reported
-        for hiddenID in self.settings.hiddenQuotaRowIDs(for: self.provider).sorted()
-            where seen.insert(hiddenID).inserted
-        {
-            rows.append(NamedRateWindow(
-                id: hiddenID,
-                title: hiddenID,
-                window: RateWindow(
-                    usedPercent: 0,
-                    windowMinutes: nil,
-                    resetsAt: nil,
-                    resetDescription: nil)))
-        }
-        return rows
+        QuotaRowVisibilityListing.rows(
+            reported: self.store.snapshot(for: self.provider.instanceID)?.extraRateWindows ?? [],
+            hiddenIDs: self.settings.hiddenQuotaRowIDs(for: self.provider),
+            gates: self.settings.quotaRowFamilyGates(for: self.provider))
     }
 
     private func binding(for id: String) -> Binding<Bool> {

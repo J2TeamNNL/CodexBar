@@ -47,7 +47,8 @@ enum QuotaRowVisibilityState {
 ///
 /// Accounts commonly expose a dozen of these; hiding the ones the user never touches keeps the menu
 /// readable without losing the underlying data. Nothing is filtered from fetches, quota warnings, or
-/// history — only from the menu rows.
+/// history — only from the menu rows. Family-level extra-usage toggles (optional credits, Spark,
+/// Daily Routines, Copilot extras) still own those rows; per-row checkboxes cannot override them.
 extension SettingsStore {
     var hiddenQuotaRowIDsRaw: [String: [String]] {
         get { self.defaultsState.hiddenQuotaRowIDsRaw }
@@ -61,8 +62,18 @@ extension SettingsStore {
         QuotaRowVisibilityState.hiddenIDs(in: self.hiddenQuotaRowIDsRaw, provider: provider)
     }
 
+    func quotaRowFamilyGates(for provider: UsageProvider) -> QuotaRowFamilyGates {
+        QuotaRowFamilyGates(
+            provider: provider,
+            showOptionalCreditsAndExtraUsage: self.showOptionalCreditsAndExtraUsage,
+            claudeDailyRoutinesUsageVisible: self.claudeDailyRoutinesUsageVisible,
+            codexSparkUsageVisible: self.codexSparkUsageVisible,
+            copilotBudgetExtrasEnabled: self.copilotBudgetExtrasEnabled)
+    }
+
     func isQuotaRowVisible(_ id: String, for provider: UsageProvider) -> Bool {
-        !self.hiddenQuotaRowIDs(for: provider).contains(id)
+        self.quotaRowFamilyGates(for: provider).allows(id: id)
+            && !self.hiddenQuotaRowIDs(for: provider).contains(id)
     }
 
     func setQuotaRow(_ id: String, visible: Bool, for provider: UsageProvider) {

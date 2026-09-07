@@ -186,6 +186,7 @@ extension CostUsageStore {
 
     static func readSnapshot(
         _ database: OpaquePointer,
+        loadTokenSnapshots: Bool = true,
         recorder: CostUsageStoreReadWorkRecorder?) throws -> CostUsageStoreSnapshot
     {
         let snapshot = try CostUsageStoreSnapshot(
@@ -194,7 +195,8 @@ extension CostUsageStore {
                 database: database,
                 table: "scan_metadata") ?? .empty,
             files: self.readFiles(database, recorder: recorder),
-            tokenSnapshots: self.readTokenSnapshots(database, path: nil, recorder: recorder),
+            tokenSnapshots: loadTokenSnapshots
+                ? self.readTokenSnapshots(database, path: nil, recorder: recorder) : [],
             usageRows: self.readUsageRows(database, path: nil, recorder: recorder),
             fileDayAggregates: self.readFileDayAggregates(database, path: nil),
             dayAggregates: self.readDayAggregates(database, sinceDay: nil, untilDay: nil),
@@ -209,7 +211,11 @@ extension CostUsageStore {
                 database: database,
                 table: "lookback_state"),
             accumulators: self.readAccumulators(database, path: nil, recorder: recorder))
-        recorder?.recordFullSnapshot()
+        if loadTokenSnapshots {
+            recorder?.recordFullSnapshot()
+        } else {
+            recorder?.recordScannerSnapshot()
+        }
         return snapshot
     }
 

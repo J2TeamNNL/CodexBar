@@ -6,6 +6,22 @@ import Testing
 @MainActor
 struct CodexWebDashboardStrategyAuthorityTests {
     @Test
+    func `direct web dashboard result preserves subscription metadata`() {
+        let dashboard = self.makeDashboard(email: "owner@example.com")
+        let renewal = Date(timeIntervalSince1970: 1_787_236_207)
+        let enriched = CodexWebDashboardStrategy.dashboardByMergingSubscriptionMetadata(
+            dashboard,
+            result: .success(.init(expiresAt: nil, renewsAt: renewal)))
+
+        #expect(enriched.subscriptionRenewsAt == renewal)
+        #expect(enriched.subscriptionExpiresAt == nil)
+        #expect(
+            CodexWebDashboardStrategy.dashboardByMergingSubscriptionMetadata(
+                dashboard,
+                result: .unavailable) == dashboard)
+    }
+
+    @Test
     func `web dashboard attach converts snapshot with authority attachment email`() throws {
         OpenAIDashboardCacheStore.clear()
         defer { OpenAIDashboardCacheStore.clear() }

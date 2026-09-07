@@ -45,6 +45,7 @@
 "hooks_any_provider" = "Valfri leverantör";
 "hooks_threshold" = "Kör vid användning ≥";
 "hooks_threshold_placeholder" = "90";
+"hooks_executable" = "Körbar fil";
 "hooks_executable_placeholder" = "/usr/local/bin/my-command";
 "hooks_arguments_placeholder" = "Argument";
 "hooks_argument_placeholder" = "Argument";
@@ -1544,3 +1545,4 @@
 "menu_bar_layout_conditional_default_either_high" = "Session eller vecka ligger högt";
 "menu_bar_layout_conditional_default_scoped_weekly" = "Modellvecka över 60 % använt";
 "Spending cap, not balance" = "Utgiftstak, inte saldo";
+"%@ weekly" = "%@ per vecka";

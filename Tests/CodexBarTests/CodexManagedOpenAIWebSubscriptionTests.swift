@@ -10,7 +10,7 @@ extension CodexManagedOpenAIWebTests {
         let managedAccount = ManagedCodexAccount(
             id: UUID(),
             email: "managed@example.com",
-            managedHomePath: "/tmp/managed-codex-home",
+            managedHomePath: CodexCredentialFixtures.root.appendingPathComponent("managed-home").path,
             createdAt: 1,
             updatedAt: 1,
             lastAuthenticatedAt: 1)
@@ -46,6 +46,9 @@ extension CodexManagedOpenAIWebTests {
         let publicationGuard = store.currentCodexAccountScopedRefreshGuard()
         store.lastCodexUsagePublicationGuard = publicationGuard
         store.lastCodexAccountScopedRefreshGuard = publicationGuard
+        var persistedWidgets: [WidgetSnapshot] = []
+        store._test_widgetSnapshotSaveOverride = { persistedWidgets.append($0) }
+        defer { store._test_widgetSnapshotSaveOverride = nil }
 
         let renewal = Date(timeIntervalSince1970: 1_787_236_207)
         let creditReset = Date(timeIntervalSince1970: 1_789_000_000)
@@ -71,6 +74,7 @@ extension CodexManagedOpenAIWebTests {
             targetEmail: managedAccount.email)
 
         let mergedUsage = try #require(store.snapshots[.codex])
+        await store.widgetSnapshotPersistTask?.value
         #expect(mergedUsage.primary == existingUsage.primary)
         #expect(mergedUsage.secondary == existingUsage.secondary)
         #expect(mergedUsage.updatedAt == existingUsage.updatedAt)
@@ -84,6 +88,9 @@ extension CodexManagedOpenAIWebTests {
         #expect(mergedUsage.providerCost?.resetsAt == creditReset)
         #expect(mergedUsage.providerCost?.currencyCode == CodexExtraUsageCost.currencyCode)
         #expect(store.lastSourceLabels[.codex] == "codex-cli")
+        #expect(persistedWidgets.count == 1)
+        #expect(store.openAIDashboardCookieImportDebugLog?.contains(
+            "subscription metadata persisted: authority=attach") == true)
 
         let refreshedUsage = UsageSnapshot(
             primary: RateWindow(
@@ -125,6 +132,7 @@ extension CodexManagedOpenAIWebTests {
                 updatedAt: Date()),
             targetEmail: managedAccount.email)
 
+        await store.widgetSnapshotPersistTask?.value
         let clearedUsage = try #require(store.snapshots[.codex])
         #expect(clearedUsage.subscriptionRenewsAt == nil)
         #expect(clearedUsage.subscriptionExpiresAt == nil)

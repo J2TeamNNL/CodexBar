@@ -139,6 +139,26 @@ public struct OpenAIDashboardSnapshot: Codable, Equatable, Sendable {
             return OpenAIDashboardDailyBreakdown(day: day, services: services, totalCreditsUsed: total)
         }
     }
+
+    public func withSubscriptionMetadata(_ metadata: OpenAISubscriptionMetadata?) -> Self {
+        Self(
+            signedInEmail: self.signedInEmail,
+            codeReviewRemainingPercent: self.codeReviewRemainingPercent,
+            codeReviewLimit: self.codeReviewLimit,
+            creditEvents: self.creditEvents,
+            dailyBreakdown: self.dailyBreakdown,
+            usageBreakdown: self.usageBreakdown,
+            creditsPurchaseURL: self.creditsPurchaseURL,
+            primaryLimit: self.primaryLimit,
+            secondaryLimit: self.secondaryLimit,
+            extraRateWindows: self.extraRateWindows,
+            creditsRemaining: self.creditsRemaining,
+            codexCreditLimit: self.codexCreditLimit,
+            accountPlan: self.accountPlan,
+            subscriptionExpiresAt: metadata?.expiresAt,
+            subscriptionRenewsAt: metadata?.renewsAt,
+            updatedAt: self.updatedAt)
+    }
 }
 
 extension OpenAIDashboardSnapshot {

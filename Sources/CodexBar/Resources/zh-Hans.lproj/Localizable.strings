@@ -2425,12 +2425,12 @@
 "merged_icon_source_title" = "合并图标来源";
 "merged_icon_source_subtitle" = "选择折叠后的合并图标显示哪个服务提供方。";
 "merged_icon_source_current_selection" = "当前选择";
-"merged_icon_source_highest_usage" = "最高用量";
+"merged_icon_source_highest_usage" = "自动：近期使用和额度耗尽风险";
 "merged_icon_source_frontmost_app" = "最前台的服务提供方应用";
 /* Provider menu bar color */
 "Color by provider" = "按服务商着色";
 
-"show_most_used_provider_subtitle" = "菜单栏会自动显示最接近速率限制的提供商。";
+"show_most_used_provider_subtitle" = "自动优先跟随近期消耗，再选择最可能先耗尽的额度。";
 
 "show_most_used_provider_title" = "显示用量最高的提供商";
 
@@ -2518,3 +2518,8 @@
 "Only enabled providers" = "仅显示已启用";
 "Restore default order" = "恢复默认顺序";
 "Also restores the provider order in the menu bar. Can be undone." = "同时恢复菜单栏中的供应商顺序。可以撤销。";
+"Auto: %@ is exhausted." = "自动：%@ 已耗尽。";
+"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "自动：按近期使用情况，%@ 可能最先耗尽，约需 %ld 分钟（估算）。";
+"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "自动：按当前速度，%@ 可能最先耗尽，约需 %ld 分钟（估算）。";
+"Auto: %@ has the least quota remaining (%ld%% used)." = "自动：%@ 的剩余额度最少（已使用 %ld%%）。";
+"Recent usage detected." = "检测到近期使用。";

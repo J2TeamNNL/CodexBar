@@ -2435,12 +2435,12 @@
 "merged_icon_source_title" = "Źródło połączonej ikony";
 "merged_icon_source_subtitle" = "Wybierz dostawcę wyświetlanego przez zwiniętą połączoną ikonę.";
 "merged_icon_source_current_selection" = "Bieżący wybór";
-"merged_icon_source_highest_usage" = "Najwyższe użycie";
+"merged_icon_source_highest_usage" = "Auto: ostatnie użycie i ryzyko wyczerpania limitu";
 "merged_icon_source_frontmost_app" = "Aplikacja dostawcy na pierwszym planie";
 /* Provider menu bar color */
 "Color by provider" = "Kolor według dostawcy";
 
-"show_most_used_provider_subtitle" = "Pasek menu automatycznie pokazuje dostawcę najbliżej limitu.";
+"show_most_used_provider_subtitle" = "Auto kieruje się ostatnim zużyciem, a następnie limitem, który może wyczerpać się jako pierwszy.";
 
 "show_most_used_provider_title" = "Pokaż najczęściej używanego dostawcę";
 
@@ -2528,3 +2528,8 @@
 "Only enabled providers" = "Tylko aktywni dostawcy";
 "Restore default order" = "Przywróć domyślną kolejność";
 "Also restores the provider order in the menu bar. Can be undone." = "Przywraca również kolejność dostawców na pasku menu. Można cofnąć.";
+"Auto: %@ is exhausted." = "Auto: limit %@ został wyczerpany.";
+"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "Auto: limit %@ może wyczerpać się jako pierwszy, za około %ld min przy ostatnim zużyciu (szacunek).";
+"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "Auto: limit %@ może wyczerpać się jako pierwszy, za około %ld min przy obecnym tempie (szacunek).";
+"Auto: %@ has the least quota remaining (%ld%% used)." = "Auto: %@ ma najmniejszy pozostały limit (wykorzystano %ld%%).";
+"Recent usage detected." = "Wykryto niedawne użycie.";

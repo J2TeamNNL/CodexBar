@@ -2433,12 +2433,12 @@
 "merged_icon_source_title" = "Nguồn biểu tượng kết hợp";
 "merged_icon_source_subtitle" = "Chọn nhà cung cấp hiển thị trên biểu tượng kết hợp khi thu gọn.";
 "merged_icon_source_current_selection" = "Lựa chọn hiện tại";
-"merged_icon_source_highest_usage" = "Mức sử dụng cao nhất";
+"merged_icon_source_highest_usage" = "Tự động: mức dùng gần đây và nguy cơ hết hạn mức";
 "merged_icon_source_frontmost_app" = "Ứng dụng nhà cung cấp ở phía trước";
 /* Provider menu bar color */
 "Color by provider" = "Màu theo nhà cung cấp";
 
-"show_most_used_provider_subtitle" = "thanh menu được sử dụng nhiều nhất tự động hiển thị Nhà cung cấp gần nhất với giới hạn tốc độ của nó.";
+"show_most_used_provider_subtitle" = "Tự động ưu tiên mức tiêu thụ gần đây, rồi hạn mức có khả năng hết trước.";
 
 "show_most_used_provider_title" = "Hiển thị Nhà cung cấp";
 
@@ -2526,3 +2526,8 @@
 "Only enabled providers" = "Chỉ nhà cung cấp đã bật";
 "Restore default order" = "Khôi phục thứ tự mặc định";
 "Also restores the provider order in the menu bar. Can be undone." = "Cũng khôi phục thứ tự nhà cung cấp trên thanh menu. Có thể hoàn tác.";
+"Auto: %@ is exhausted." = "Tự động: %@ đã hết hạn mức.";
+"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "Tự động: %@ có thể hết trước, trong khoảng %ld phút theo mức dùng gần đây (ước tính).";
+"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "Tự động: %@ có thể hết trước, trong khoảng %ld phút theo tốc độ hiện tại (ước tính).";
+"Auto: %@ has the least quota remaining (%ld%% used)." = "Tự động: %@ còn ít hạn mức nhất (đã dùng %ld%%).";
+"Recent usage detected." = "Đã phát hiện sử dụng gần đây.";

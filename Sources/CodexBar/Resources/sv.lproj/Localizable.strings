@@ -2431,12 +2431,12 @@
 "merged_icon_source_title" = "Källa för kombinerad ikon";
 "merged_icon_source_subtitle" = "Välj vilken leverantör den hopfällda kombinerade ikonen visar.";
 "merged_icon_source_current_selection" = "Aktuellt val";
-"merged_icon_source_highest_usage" = "Högsta användning";
+"merged_icon_source_highest_usage" = "Auto: senaste användning och risk för förbrukad kvot";
 "merged_icon_source_frontmost_app" = "Leverantörsapp i förgrunden";
 /* Provider menu bar color */
 "Color by provider" = "Färg per leverantör";
 
-"show_most_used_provider_subtitle" = "Menyraden visar automatiskt leverantören som ligger närmast sin gräns.";
+"show_most_used_provider_subtitle" = "Auto följer den senaste förbrukningen och sedan kvoten som troligast tar slut först.";
 
 "show_most_used_provider_title" = "Visa mest använda leverantör";
 
@@ -2524,3 +2524,8 @@
 "Only enabled providers" = "Endast aktiverade leverantörer";
 "Restore default order" = "Återställ standardordning";
 "Also restores the provider order in the menu bar. Can be undone." = "Återställer även leverantörsordningen i menyraden. Kan ångras.";
+"Auto: %@ is exhausted." = "Auto: %@ är förbrukad.";
+"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "Auto: %@ kan ta slut först, om cirka %ld min vid senaste användningen (uppskattning).";
+"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "Auto: %@ kan ta slut först, om cirka %ld min i nuvarande takt (uppskattning).";
+"Auto: %@ has the least quota remaining (%ld%% used)." = "Auto: %@ har minst kvot kvar (%ld%% använt).";
+"Recent usage detected." = "Nylig användning upptäckt.";

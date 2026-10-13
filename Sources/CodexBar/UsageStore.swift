@@ -150,7 +150,19 @@ final class UsageStore {
         case dashboardWeb
     }
 
-    var snapshots: [ProviderInstanceID: UsageSnapshot] = [:]
+    var recentQuotaConsumption = RecentQuotaConsumption()
+    var snapshots: [ProviderInstanceID: UsageSnapshot] = [:] {
+        didSet {
+            for provider in Set(oldValue.keys).union(self.snapshots.keys) {
+                self.recentQuotaConsumption.observe(
+                    provider: provider,
+                    previous: oldValue[provider],
+                    current: self.snapshots[provider],
+                    accountScope: self.automaticQuotaAccountScope(for: provider))
+            }
+        }
+    }
+
     var errors: [ProviderInstanceID: String] = [:]
     var diagnostics: [ProviderInstanceID: String] = [:]
     var geminiMigrationObservation: GeminiMigrationObservation = .none

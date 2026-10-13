@@ -2431,12 +2431,12 @@
 "merged_icon_source_title" = "Bron van gecombineerd pictogram";
 "merged_icon_source_subtitle" = "Kies welke provider het ingeklapte gecombineerde pictogram toont.";
 "merged_icon_source_current_selection" = "Huidige selectie";
-"merged_icon_source_highest_usage" = "Hoogste gebruik";
+"merged_icon_source_highest_usage" = "Auto: recent gebruik en risico op uitgeput quotum";
 "merged_icon_source_frontmost_app" = "Provider-app op de voorgrond";
 /* Provider menu bar color */
 "Color by provider" = "Kleur per provider";
 
-"show_most_used_provider_subtitle" = "De menubalk toont automatisch de aanbieder die het dichtst bij de tarieflimiet zit.";
+"show_most_used_provider_subtitle" = "Auto volgt recent verbruik en daarna het quotum dat waarschijnlijk het eerst opraakt.";
 
 "show_most_used_provider_title" = "Toon meest gebruikte provider";
 
@@ -2524,3 +2524,8 @@
 "Only enabled providers" = "Alleen ingeschakelde aanbieders";
 "Restore default order" = "Standaardvolgorde herstellen";
 "Also restores the provider order in the menu bar. Can be undone." = "Herstelt ook de volgorde van aanbieders in de menubalk. Kan ongedaan worden gemaakt.";
+"Auto: %@ is exhausted." = "Auto: %@ is uitgeput.";
+"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "Auto: %@ raakt mogelijk het eerst op, over ongeveer %ld min bij recent gebruik (schatting).";
+"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "Auto: %@ raakt mogelijk het eerst op, over ongeveer %ld min bij het huidige tempo (schatting).";
+"Auto: %@ has the least quota remaining (%ld%% used)." = "Auto: %@ heeft het minste quotum over (%ld%% gebruikt).";
+"Recent usage detected." = "Recent gebruik gedetecteerd.";

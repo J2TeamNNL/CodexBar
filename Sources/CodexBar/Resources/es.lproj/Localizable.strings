@@ -2430,12 +2430,12 @@
 "merged_icon_source_title" = "Origen del icono combinado";
 "merged_icon_source_subtitle" = "Elige qué proveedor muestra el icono combinado cuando está contraído.";
 "merged_icon_source_current_selection" = "Selección actual";
-"merged_icon_source_highest_usage" = "Mayor uso";
+"merged_icon_source_highest_usage" = "Auto: uso reciente y riesgo de agotar la cuota";
 "merged_icon_source_frontmost_app" = "Aplicación del proveedor en primer plano";
 /* Provider menu bar color */
 "Color by provider" = "Color por proveedor";
 
-"show_most_used_provider_subtitle" = "La barra de menús muestra automáticamente el proveedor más cercano a su límite.";
+"show_most_used_provider_subtitle" = "Auto sigue el consumo reciente y después la cuota con más probabilidades de agotarse.";
 
 "show_most_used_provider_title" = "Mostrar el proveedor más usado";
 
@@ -2523,3 +2523,8 @@
 "Only enabled providers" = "Solo proveedores activos";
 "Restore default order" = "Restaurar el orden predeterminado";
 "Also restores the provider order in the menu bar. Can be undone." = "También restaura el orden de proveedores en la barra de menús. Se puede deshacer.";
+"Auto: %@ is exhausted." = "Auto: %@ se ha agotado.";
+"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "Auto: %@ podría agotarse primero, en unos %ld min según el uso reciente (estimación).";
+"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "Auto: %@ podría agotarse primero, en unos %ld min al ritmo actual (estimación).";
+"Auto: %@ has the least quota remaining (%ld%% used)." = "Auto: %@ tiene la menor cuota restante (%ld%% usado).";
+"Recent usage detected." = "Se ha detectado uso reciente.";

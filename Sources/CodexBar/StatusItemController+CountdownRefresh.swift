@@ -9,6 +9,9 @@ extension StatusItemController {
         self.menuBarCountdownRefreshTask = nil
 
         var delays: [TimeInterval] = []
+        if let delay = self.store.automaticQuotaRefreshDelay(now: now) {
+            delays.append(delay)
+        }
         let providers = self.menuBarRefreshProviders()
         let displayMode = self.settings.menuBarDisplayMode
         let smartExhaustedActive = self.settings.menuBarShowsBrandIconWithPercent

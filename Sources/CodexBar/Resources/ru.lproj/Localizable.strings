@@ -2433,12 +2433,12 @@
 "merged_icon_source_title" = "Источник объединённого значка";
 "merged_icon_source_subtitle" = "Выберите провайдера для свёрнутого объединённого значка.";
 "merged_icon_source_current_selection" = "Текущий выбор";
-"merged_icon_source_highest_usage" = "Наибольшее использование";
+"merged_icon_source_highest_usage" = "Авто: недавнее использование и риск исчерпания квоты";
 "merged_icon_source_frontmost_app" = "Приложение провайдера на переднем плане";
 /* Provider menu bar color */
 "Color by provider" = "Цвет по провайдеру";
 
-"show_most_used_provider_subtitle" = "В строке меню автоматически отображается провайдер, ближайший к лимиту.";
+"show_most_used_provider_subtitle" = "Авто учитывает недавний расход, затем квоту, которая вероятнее всего закончится первой.";
 
 "show_most_used_provider_title" = "Показывать провайдера с наибольшим использованием";
 
@@ -2526,3 +2526,8 @@
 "Only enabled providers" = "Только активные провайдеры";
 "Restore default order" = "Восстановить исходный порядок";
 "Also restores the provider order in the menu bar. Can be undone." = "Также восстанавливает порядок провайдеров в строке меню. Действие можно отменить.";
+"Auto: %@ is exhausted." = "Авто: квота %@ исчерпана.";
+"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "Авто: квота %@ может закончиться первой примерно через %ld мин при недавнем расходе (оценка).";
+"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "Авто: квота %@ может закончиться первой примерно через %ld мин при текущем темпе (оценка).";
+"Auto: %@ has the least quota remaining (%ld%% used)." = "Авто: у %@ осталось меньше всего квоты (использовано %ld%%).";
+"Recent usage detected." = "Обнаружено недавнее использование.";

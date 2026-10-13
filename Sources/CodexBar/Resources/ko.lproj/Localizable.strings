@@ -2400,12 +2400,12 @@
 "merged_icon_source_title" = "통합 아이콘 표시 기준";
 "merged_icon_source_subtitle" = "접힌 통합 아이콘에 표시할 공급자를 선택합니다.";
 "merged_icon_source_current_selection" = "현재 선택";
-"merged_icon_source_highest_usage" = "사용량이 가장 높음";
+"merged_icon_source_highest_usage" = "자동: 최근 사용량 및 할당량 소진 위험";
 "merged_icon_source_frontmost_app" = "전면의 공급자 앱";
 /* Provider menu bar color */
 "Color by provider" = "제공업체별 색상";
 
-"show_most_used_provider_subtitle" = "메뉴 막대에 사용 한도에 가장 가까운 공급자를 자동으로 표시합니다.";
+"show_most_used_provider_subtitle" = "자동은 최근 사용량을 우선한 다음 소진될 가능성이 가장 높은 할당량을 선택합니다.";
 
 "show_most_used_provider_title" = "가장 많이 사용한 공급자 표시";
 
@@ -2493,3 +2493,8 @@
 "Only enabled providers" = "활성 공급자만 표시";
 "Restore default order" = "기본 순서 복원";
 "Also restores the provider order in the menu bar. Can be undone." = "메뉴 막대의 공급자 순서도 복원합니다. 실행 취소할 수 있습니다.";
+"Auto: %@ is exhausted." = "자동: %@이(가) 소진되었습니다.";
+"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "자동: 최근 사용량 기준으로 %@이(가) 약 %ld분 후 가장 먼저 소진될 수 있습니다(추정).";
+"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "자동: 현재 속도 기준으로 %@이(가) 약 %ld분 후 가장 먼저 소진될 수 있습니다(추정).";
+"Auto: %@ has the least quota remaining (%ld%% used)." = "자동: %@의 남은 할당량이 가장 적습니다(%ld%% 사용).";
+"Recent usage detected." = "최근 사용이 감지되었습니다.";

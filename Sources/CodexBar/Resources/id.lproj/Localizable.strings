@@ -2435,12 +2435,12 @@
 "merged_icon_source_title" = "Sumber ikon gabungan";
 "merged_icon_source_subtitle" = "Pilih penyedia yang ditampilkan ikon gabungan saat diciutkan.";
 "merged_icon_source_current_selection" = "Pilihan saat ini";
-"merged_icon_source_highest_usage" = "Penggunaan tertinggi";
+"merged_icon_source_highest_usage" = "Otomatis: penggunaan terbaru dan risiko kuota habis";
 "merged_icon_source_frontmost_app" = "Aplikasi penyedia di depan";
 /* Provider menu bar color */
 "Color by provider" = "Warna menurut penyedia";
 
-"show_most_used_provider_subtitle" = "Menu bar otomatis menampilkan penyedia yang paling dekat batas penggunaannya.";
+"show_most_used_provider_subtitle" = "Otomatis mengikuti konsumsi terbaru, lalu kuota yang paling mungkin habis.";
 
 "show_most_used_provider_title" = "Tampilkan penyedia paling sering digunakan";
 
@@ -2528,3 +2528,8 @@
 "Only enabled providers" = "Hanya penyedia aktif";
 "Restore default order" = "Pulihkan urutan bawaan";
 "Also restores the provider order in the menu bar. Can be undone." = "Juga memulihkan urutan penyedia di bar menu. Dapat diurungkan.";
+"Auto: %@ is exhausted." = "Otomatis: %@ sudah habis.";
+"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "Otomatis: %@ mungkin habis lebih dahulu, dalam sekitar %ld menit berdasarkan penggunaan terbaru (perkiraan).";
+"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "Otomatis: %@ mungkin habis lebih dahulu, dalam sekitar %ld menit pada laju saat ini (perkiraan).";
+"Auto: %@ has the least quota remaining (%ld%% used)." = "Otomatis: %@ memiliki sisa kuota paling sedikit (%ld%% terpakai).";
+"Recent usage detected." = "Penggunaan terbaru terdeteksi.";

@@ -257,7 +257,7 @@ extension StatusItemController {
         let primaryProvider = self.primaryProviderForUnifiedIcon()
         let providerTint = self.providerTintColor(for: primaryProvider, button: button)
         let resolverStyle = self.store.style(for: primaryProvider)
-        let snapshot = self.store.menuBarSnapshot(for: primaryProvider.instanceID)
+        let snapshot = self.menuBarSnapshotUpdatingAutoTooltip(provider: primaryProvider, button: button)
         let warningFlash = self.quotaWarningFlashActive(provider: primaryProvider)
 
         if let rows = self.stackedMergeIconProvidersIfActive(),
@@ -487,7 +487,7 @@ extension StatusItemController {
     func applyIcon(for provider: UsageProvider, phase: Double?) -> Bool {
         guard let button = self.statusItems[provider.instanceID]?.button else { return false }
         let providerTint = self.providerTintColor(for: provider, button: button)
-        let snapshot = self.store.menuBarSnapshot(for: provider.instanceID)
+        let snapshot = self.menuBarSnapshotUpdatingAutoTooltip(provider: provider, button: button)
         // IconRenderer treats these values as a left-to-right "progress fill" percentage; depending on the
         // user setting we pass either "percent left" or "percent used".
         let showUsed = self.settings.usageBarsShowUsed

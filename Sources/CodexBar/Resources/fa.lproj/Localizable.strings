@@ -2436,12 +2436,12 @@
 "merged_icon_source_title" = "منبع نماد ترکیبی";
 "merged_icon_source_subtitle" = "انتخاب کنید نماد ترکیبی در حالت جمع‌شده کدام ارائه‌دهنده را نشان دهد.";
 "merged_icon_source_current_selection" = "انتخاب فعلی";
-"merged_icon_source_highest_usage" = "بیشترین استفاده";
+"merged_icon_source_highest_usage" = "خودکار: مصرف اخیر و خطر اتمام سهمیه";
 "merged_icon_source_frontmost_app" = "برنامه ارائه‌دهنده در پیش‌زمینه";
 /* Provider menu bar color */
 "Color by provider" = "رنگ بر اساس ارائه‌دهنده";
 
-"show_most_used_provider_subtitle" = "نوار منو به طور خودکار ارائه دهنده ای را نشان می دهد که به محدودیت نرخ خود نزدیک تر است.";
+"show_most_used_provider_subtitle" = "حالت خودکار مصرف اخیر و سپس سهمیه‌ای را دنبال می‌کند که احتمال اتمام آن بیشتر است.";
 
 "show_most_used_provider_title" = "نمایش ارائه دهنده پرکاربرد";
 
@@ -2529,3 +2529,8 @@
 "Only enabled providers" = "فقط ارائه‌دهندگان فعال";
 "Restore default order" = "بازیابی ترتیب پیش‌فرض";
 "Also restores the provider order in the menu bar. Can be undone." = "ترتیب ارائه‌دهندگان در نوار منو را نیز بازیابی می‌کند. قابل واگرد است.";
+"Auto: %@ is exhausted." = "خودکار: سهمیهٔ %@ تمام شده است.";
+"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "خودکار: ممکن است سهمیهٔ %@ زودتر تمام شود؛ با مصرف اخیر حدود %ld دقیقه دیگر (تخمینی).";
+"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "خودکار: ممکن است سهمیهٔ %@ زودتر تمام شود؛ با سرعت فعلی حدود %ld دقیقه دیگر (تخمینی).";
+"Auto: %@ has the least quota remaining (%ld%% used)." = "خودکار: %@ کمترین سهمیهٔ باقی‌مانده را دارد (%ld%% مصرف شده).";
+"Recent usage detected." = "مصرف اخیر شناسایی شد.";

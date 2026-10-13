@@ -12,6 +12,17 @@ enum MenuBarMetricWindowResolver {
         -> RateWindow?
     {
         guard let snapshot else { return nil }
+        if preference == .automatic {
+            return AutomaticQuotaSelection.select(
+                windows: Self.automaticCandidates(
+                    provider: provider,
+                    snapshot: snapshot,
+                    prioritizesExhaustedQuotas: antigravityPrioritizeExhaustedQuotas,
+                    now: now),
+                now: now,
+                forecast: { AutomaticQuotaSelection.paceForecast(
+                    provider: provider, snapshot: snapshot, window: $0, now: now) })?.window
+        }
         let presentation = ProviderDescriptorRegistry.descriptor(for: provider).presentation
         let metric = preference.providerMetric
         switch presentation.menuBarWindow(context: ProviderMenuBarWindowContext(
@@ -43,9 +54,7 @@ enum MenuBarMetricWindowResolver {
         case .average:
             return Self.averageWindow(snapshot: snapshot, supportsAverage: supportsAverage)
         case .automatic:
-            return Self.automaticWindow(
-                presentation: presentation,
-                snapshot: snapshot)
+            return nil // Resolved before explicit provider metric preferences.
         }
     }
 
@@ -68,20 +77,6 @@ enum MenuBarMetricWindowResolver {
 
         let usedPercent = (primary.usedPercent + secondary.usedPercent) / 2
         return RateWindow(usedPercent: usedPercent, windowMinutes: nil, resetsAt: nil, resetDescription: nil)
-    }
-
-    private static func automaticWindow(
-        presentation: ProviderUsagePresentation,
-        snapshot: UsageSnapshot)
-        -> RateWindow?
-    {
-        if presentation.automaticSelectionPrioritizesExhaustedWindow,
-           let exhausted = [snapshot.primary, snapshot.secondary, snapshot.tertiary]
-               .compactMap(\.self).first(where: { $0.usedPercent >= 100 })
-        {
-            return exhausted
-        }
-        return snapshot.primary ?? snapshot.secondary ?? snapshot.tertiary
     }
 
     private static let antigravityQuotaSummaryWindowIDPrefix = "antigravity-quota-summary-"

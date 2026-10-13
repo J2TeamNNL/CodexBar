@@ -161,6 +161,22 @@ struct AutomaticQuotaSelectionTests {
         }
     }
 
+    @Test
+    func `independent exhausted model pools do not replace binding subscription budgets`() {
+        let primary = self.window(20, name: "Primary")
+        let secondary = self.window(40, name: "Secondary")
+        let separate = self.window(100, name: "Separate model pool")
+        let snapshot = UsageSnapshot(primary: primary, secondary: secondary, tertiary: separate, updatedAt: self.now)
+        for provider in [UsageProvider.factory, .litellm, .bifrost, .copilot, .claude] {
+            #expect(MenuBarMetricWindowResolver.rateWindow(
+                preference: .automatic,
+                provider: provider,
+                snapshot: snapshot,
+                supportsAverage: false,
+                now: self.now) == secondary)
+        }
+    }
+
     private func window(_ used: Double, resetAfter: TimeInterval? = nil, name: String) -> RateWindow {
         RateWindow(
             usedPercent: used,

@@ -125,7 +125,21 @@ extension MenuBarMetricWindowResolver {
             let monthly = snapshot.extraRateWindows?.first { $0.id == "kimi-monthly" && $0.usageKnown }?.window
             return [snapshot.secondary, snapshot.primary, monthly].compactMap(\.self)
         case .claude:
-            return standard.contains(where: { !$0.isSyntheticPlaceholder }) ? standard : fallback
+            let base = [snapshot.primary, snapshot.secondary].compactMap(\.self)
+                .filter { !$0.isSyntheticPlaceholder }
+            guard !base.isEmpty else {
+                return standard.contains(where: { !$0.isSyntheticPlaceholder }) ? standard : fallback
+            }
+            // An exhausted model-only pool does not block the other models in the subscription.
+            let scoped = snapshot.tertiary.flatMap { window in
+                window.usedPercent >= 100 && base.contains(where: { $0.usedPercent < 100 }) ? nil : window
+            }
+            return base + [scoped].compactMap(\.self)
+        case .factory, .litellm, .bifrost:
+            // These descriptors expose two competing budgets; a tertiary pool is not their binding budget.
+            return [snapshot.primary, snapshot.secondary].compactMap(\.self)
+        case .copilot where snapshot.primary != nil && snapshot.secondary != nil:
+            return [snapshot.primary, snapshot.secondary].compactMap(\.self)
         case .zai:
             // Monthly MCP is a separate product; never let it replace the coding-plan quota.
             return [snapshot.primary, snapshot.secondary].compactMap(\.self)

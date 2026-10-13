@@ -65,7 +65,7 @@ struct GeminiMenuBarWindowTests {
     }
 
     @Test
-    func `gemini metrics keep Pro over Flash Lite when Flash is unavailable`() throws {
+    func `gemini Auto chooses the most constrained quota while explicit metrics retain Pro`() throws {
         let snapshot = try GeminiStatusProbe.parse(text: """
         gemini-2.5-pro                               3       70.0% (Resets in 24h)
         gemini-2.5-flash-lite                       12       60.0% (Resets in 6h)
@@ -78,7 +78,7 @@ struct GeminiMenuBarWindowTests {
                 snapshot: snapshot,
                 supportsAverage: true)
 
-            #expect(window?.usedPercent == 30, "Failed preference: \(preference)")
+            #expect(window?.usedPercent == (preference == .automatic ? 40 : 30), "Failed preference: \(preference)")
         }
     }
 }

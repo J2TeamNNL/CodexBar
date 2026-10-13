@@ -573,7 +573,7 @@ struct StatusItemAnimationTests {
     }
 
     @Test
-    func `menu bar percent automatic keeps gemini primary over higher tertiary`() {
+    func `menu bar percent automatic chooses the most constrained gemini quota`() {
         let settings = SettingsStore(
             configStore: testConfigStore(suiteName: "StatusItemAnimationTests-gemini-automatic-primary"),
             zaiTokenStore: NoopZaiTokenStore())
@@ -609,7 +609,7 @@ struct StatusItemAnimationTests {
 
         let window = controller.menuBarMetricWindow(for: .gemini, snapshot: snapshot)
 
-        #expect(window?.usedPercent == 20)
+        #expect(window?.usedPercent == 95)
     }
 
     @Test

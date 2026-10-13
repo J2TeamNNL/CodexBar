@@ -9,8 +9,13 @@ extension StatusItemController {
         self.menuBarCountdownRefreshTask = nil
 
         var delays: [TimeInterval] = []
-        if let delay = self.store.automaticQuotaRefreshDelay(now: now) {
-            delays.append(delay)
+        if self.shouldMergeIcons, self.settings.unifiedIconSource == .highestUsage {
+            let candidates = self.settings.resolvedMergedOverviewProviders(
+                activeProviders: self.store.enabledFirstPartyProvidersForDisplay(),
+                maxVisibleProviders: SettingsStore.mergedOverviewProviderLimit)
+            if let delay = self.store.automaticQuotaRefreshDelay(now: now, providers: candidates) {
+                delays.append(delay)
+            }
         }
         let providers = self.menuBarRefreshProviders()
         let displayMode = self.settings.menuBarDisplayMode
@@ -22,6 +27,11 @@ extension StatusItemController {
         var absoluteResetDates: [Date] = []
         for provider in providers {
             let resolution = self.renderedMenuBarLayoutResolution(for: provider)
+            if let delay = self
+                .menuBarAutomaticQuotaRefreshDelay(provider: provider, resolution: resolution, now: now)
+            {
+                delays.append(delay)
+            }
             if !resolution.usesLegacyRendering,
                self.settings.menuBarIconStyle == .iconAndPercent
             {

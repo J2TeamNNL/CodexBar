@@ -192,4 +192,50 @@ struct AutomaticProviderPriorityTests {
             #expect(store.providerWithHighestUsage(now: self.start.addingTimeInterval(220))?.provider == .kimi)
         }
     }
+
+    @Test func `provider filtered scheduling ignores single quotas unrelated activity and disabled providers`() {
+        let store = self.makeStore()
+        let now = self.start.addingTimeInterval(120)
+        self.publish(20, provider: .claude, after: 0, store: store)
+        self.publishWithoutReset(10, after: 0, store: store)
+        self.publishWithoutReset(20, after: 120, store: store)
+        #expect(store.automaticQuotaRefreshDelay(
+            now: now, providers: [.claude], observesRecentActivity: false, requiresMultipleQuotas: true) == nil)
+        store._setSnapshotForTesting(
+            UsageSnapshot(
+                primary: RateWindow(
+                    usedPercent: 20,
+                    windowMinutes: 300,
+                    resetsAt: self.start.addingTimeInterval(150),
+                    resetDescription: nil),
+                secondary: RateWindow(
+                    usedPercent: 60,
+                    windowMinutes: 10080,
+                    resetsAt: self.start.addingTimeInterval(36000),
+                    resetDescription: nil),
+                updatedAt: now), provider: .claude)
+        let delay = store.automaticQuotaRefreshDelay(
+            now: now, providers: [.claude], observesRecentActivity: false, requiresMultipleQuotas: true)
+        #expect(delay != nil)
+        #expect(abs((delay ?? 0) - 30.1) < 0.001)
+        #expect(store.automaticQuotaRefreshDelay(
+            now: now, providers: [], observesRecentActivity: false, requiresMultipleQuotas: true) == nil)
+        store.settings.setMenuBarMetricPreference(.primary, for: .claude)
+        #expect(store.automaticQuotaRefreshDelay(
+            now: now,
+            providers: [.claude],
+            observesRecentActivity: false,
+            requiresMultipleQuotas: true) == nil)
+        #expect(store.automaticQuotaRefreshDelay(
+            now: now,
+            providers: [.claude],
+            observesRecentActivity: false,
+            requiresMultipleQuotas: true,
+            usesLayoutAutomaticWindow: true) == delay)
+        if let metadata = ProviderRegistry.shared.metadata[.claude] {
+            store.settings.setProviderEnabled(provider: .claude, metadata: metadata, enabled: false)
+        }
+        #expect(store.automaticQuotaRefreshDelay(
+            now: now, providers: [.claude], observesRecentActivity: false, requiresMultipleQuotas: true) == nil)
+    }
 }

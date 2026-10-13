@@ -3,6 +3,34 @@ import CodexBarCore
 import Foundation
 
 extension StatusItemController {
+    func menuBarAutomaticQuotaRefreshDelay(
+        provider: UsageProvider,
+        resolution: MenuBarLayoutResolution,
+        now: Date) -> TimeInterval?
+    {
+        guard self.settings.menuBarShowsBrandIconWithPercent else { return nil }
+        let observesAutomatic: Bool
+        if resolution.usesLegacyRendering {
+            observesAutomatic = self.settings.menuBarMetricPreference(for: provider) == .automatic
+        } else {
+            let tokens = resolution.layout.flattenedTokens(conditionals: self.settings.menuBarLayoutConditionals)
+            let metrics = self.referencedConditionalMetrics(resolution: resolution)
+            observesAutomatic = tokens.contains { token in
+                switch token {
+                case .percent(window: .automatic), .pace(window: .automatic), .progressBar(window: .automatic): true
+                default: token.resetWindow == .automatic
+                }
+            } || !metrics.isDisjoint(with: [.automatic, .automaticPace, .automaticResetsIn])
+        }
+        guard observesAutomatic else { return nil }
+        return self.store.automaticQuotaRefreshDelay(
+            now: now,
+            providers: [provider],
+            observesRecentActivity: false,
+            requiresMultipleQuotas: true,
+            usesLayoutAutomaticWindow: true)
+    }
+
     func menuBarMetricWindow(for provider: UsageProvider, snapshot: UsageSnapshot?, now: Date = Date()) -> RateWindow? {
         if provider == .codex {
             return self.codexMenuBarMetricWindow(snapshot: snapshot, now: now)

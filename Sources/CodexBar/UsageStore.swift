@@ -154,11 +154,10 @@ final class UsageStore {
     var snapshots: [ProviderInstanceID: UsageSnapshot] = [:] {
         didSet {
             for provider in Set(oldValue.keys).union(self.snapshots.keys) {
-                self.recentQuotaConsumption.observe(
+                self.observeRecentQuotaConsumptionSnapshotChange(
                     provider: provider,
                     previous: oldValue[provider],
-                    current: self.snapshots[provider],
-                    accountScope: self.automaticQuotaAccountScope(for: provider))
+                    current: self.snapshots[provider])
             }
         }
     }
@@ -176,7 +175,13 @@ final class UsageStore {
     var codexAccountSnapshots: [CodexAccountUsageSnapshot] = []
     var codexSettingsRefreshingAccountIDs: Set<String> = []
     var kiloScopeSnapshots: [KiloScopeSnapshot] = []
-    var claudeSwapAccountSnapshots: [ProviderAccountUsageSnapshot] = []
+    /// Provider-specific by design: Claude swap samples belong to the active menu bar account.
+    var claudeSwapAccountSnapshots: [ProviderAccountUsageSnapshot] = [] {
+        didSet {
+            self.observeClaudeSwapAccountSnapshotChange(from: oldValue)
+        }
+    }
+
     var claudeSwapLastRefreshAt: Date?
     var claudeSwapLastError: String?
     var claudeSwapDetectedVersion: String?

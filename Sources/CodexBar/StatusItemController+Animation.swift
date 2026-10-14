@@ -882,16 +882,7 @@ extension StatusItemController {
         now: Date = .init()) -> String?
     {
         let mode = self.settings.menuBarDisplayMode
-        let preference = self.settings.menuBarMetricPreference(for: provider, snapshot: snapshot)
-        // Provider-specific by design: legacy preferences select balance text before quota and display modes.
-        let usesBalance = switch provider {
-        case .openrouter: preference == .automatic
-        case .mimo: snapshot?.primary == nil || preference == .secondary
-        case .opencodego, .devpass: snapshot?.primary == nil && snapshot?.secondary == nil
-        case .mistral: self.menuBarMetricWindow(for: provider, snapshot: snapshot, now: now) == nil
-        default: !ProviderDescriptorRegistry.descriptor(for: provider).presentation.menuBarBalanceUsesPrepaidCost
-        }
-        if usesBalance, let balance = MenuBarLayoutBalanceResolver.balance(provider: provider, snapshot: snapshot) {
+        if let balance = self.legacyMenuBarBalanceText(provider: provider, snapshot: snapshot, now: now) {
             return balance
         }
         if provider == .kiro {
@@ -986,6 +977,20 @@ extension StatusItemController {
             resetTimeDisplayStyle: self.settings.resetTimeDisplayStyle,
             showsResetTimeWhenExhausted: self.settings.menuBarShowsResetTimeWhenExhausted,
             now: now)
+    }
+
+    func legacyMenuBarBalanceText(provider: UsageProvider, snapshot: UsageSnapshot?, now: Date) -> String? {
+        let preference = self.settings.menuBarMetricPreference(for: provider, snapshot: snapshot)
+        // Provider-specific by design: legacy preferences select balance text before quota and display modes.
+        let usesBalance = switch provider {
+        case .openrouter: preference == .automatic
+        case .mimo: snapshot?.primary == nil || preference == .secondary
+        case .opencodego, .devpass: snapshot?.primary == nil && snapshot?.secondary == nil
+        case .mistral: self.menuBarMetricWindow(for: provider, snapshot: snapshot, now: now) == nil
+        default: !ProviderDescriptorRegistry.descriptor(for: provider).presentation.menuBarBalanceUsesPrepaidCost
+        }
+        guard usesBalance else { return nil }
+        return MenuBarLayoutBalanceResolver.balance(provider: provider, snapshot: snapshot)
     }
 
     nonisolated static func menuBarLayoutAutomaticText(

@@ -1187,6 +1187,48 @@ final class MenuBarLayoutRenderer {
 }
 
 extension MenuBarLayoutRenderer {
+    static func renderedTokens(
+        layout: MenuBarLayout,
+        data: MenuBarLayoutRenderData,
+        conditionals: [MenuBarLayoutConditional],
+        now: Date) -> [MenuBarLayoutToken]
+    {
+        let conditionalsByID = Dictionary(
+            conditionals.map { ($0.id, $0) },
+            uniquingKeysWith: { first, _ in first })
+        let outcomes = Dictionary(
+            conditionals.map { ($0.id, $0.evaluatesTrue(data: data, now: now)) },
+            uniquingKeysWith: { first, _ in first })
+        var lines = Self.resolvedDisplayLines(
+            layout: layout,
+            data: data,
+            conditionals: conditionalsByID,
+            outcomes: outcomes)
+        Self.removeDuplicateBalanceResets(from: &lines, data: data)
+        return lines.flatMap(\.self)
+    }
+
+    private static func resolvedDisplayLines(
+        layout: MenuBarLayout,
+        data: MenuBarLayoutRenderData,
+        conditionals: [UUID: MenuBarLayoutConditional],
+        outcomes: [UUID: Bool]) -> [[MenuBarLayoutToken]]
+    {
+        layout.lines
+            .map { line in
+                line.compactMap {
+                    Self.resolvedDisplayToken(
+                        $0,
+                        data: data,
+                        conditionals: conditionals,
+                        outcomes: outcomes)
+                }
+            }
+            .filter { !$0.isEmpty }
+    }
+}
+
+extension MenuBarLayoutRenderer {
     /// Tokens-per-minute text and graph, kept out of the class body's main switch.
     private static func renderThroughputItem(
         _ item: MenuBarLayoutToken,

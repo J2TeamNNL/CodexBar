@@ -94,6 +94,139 @@ struct StatusItemIconObservationSignatureTests {
     }
 
     @Test
+    func `automatic tooltip follows rendered custom metric instead of legacy preference`() throws {
+        let (settings, store, controller) = self.makeController(
+            suiteName: "StatusItemIconObservationSignatureTests-auto-tooltip-rendered",
+            menuBarLayout: MenuBarLayout(lines: [[.icon, .percent(window: .automatic)]]),
+            provider: .claude)
+        defer { controller.releaseStatusItemsForTesting() }
+
+        let now = Date()
+        let snapshot = Self.makeSnapshot(provider: .claude, email: "claude@example.com", updatedAt: now)
+        store._setSnapshotForTesting(snapshot, provider: .claude)
+        settings.setMenuBarMetricPreference(.primary, for: .claude)
+
+        let button = try #require(controller.statusItem.button)
+        #expect(store.automaticQuotaSelection(provider: .claude, snapshot: snapshot, now: now) != nil)
+        _ = controller.menuBarSnapshotUpdatingAutoTooltip(provider: .claude, button: button)
+        #expect(button.toolTip != nil)
+    }
+
+    @Test
+    func `automatic tooltip ignores an automatic token in an unrendered conditional branch`() throws {
+        let conditional = MenuBarLayoutConditional(
+            clauses: [MenuBarConditionalClause(
+                combinator: nil,
+                predicate: MenuBarConditionalPredicate(metric: .session, comparison: .greaterThan, threshold: 50))],
+            thenToken: .percent(window: .automatic),
+            elseToken: .hidden)
+        let (settings, store, controller) = self.makeController(
+            suiteName: "StatusItemIconObservationSignatureTests-auto-tooltip-conditional",
+            menuBarLayout: MenuBarLayout(lines: [[.icon, .conditional(id: conditional.id)]]),
+            provider: .claude)
+        defer { controller.releaseStatusItemsForTesting() }
+
+        let now = Date()
+        let snapshot = Self.makeSnapshot(provider: .claude, email: "claude@example.com", updatedAt: now)
+        store._setSnapshotForTesting(snapshot, provider: .claude)
+        settings.menuBarLayoutConditionals = [conditional]
+        settings.setMenuBarMetricPreference(.automatic, for: .claude)
+
+        let button = try #require(controller.statusItem.button)
+        #expect(store.automaticQuotaSelection(provider: .claude, snapshot: snapshot, now: now) != nil)
+        _ = controller.menuBarSnapshotUpdatingAutoTooltip(provider: .claude, button: button)
+        #expect(button.toolTip == nil)
+    }
+
+    @Test
+    func `legacy OpenRouter balance does not show an automatic quota tooltip`() throws {
+        let (settings, store, controller) = self.makeController(
+            suiteName: "StatusItemIconObservationSignatureTests-openrouter-auto-tooltip",
+            provider: .openrouter)
+        defer { controller.releaseStatusItemsForTesting() }
+
+        settings.menuBarShowsBrandIconWithPercent = true
+        settings.menuBarDisplayMode = .percent
+        settings.setMenuBarMetricPreference(.automatic, for: .openrouter)
+        let now = Date()
+        let snapshot = OpenRouterUsageSnapshot(
+            totalCredits: 50,
+            totalUsage: 37.66,
+            balance: 12.34,
+            usedPercent: 75.32,
+            keyLimit: 20,
+            keyUsage: 5,
+            updatedAt: now).toUsageSnapshot()
+        store._setSnapshotForTesting(snapshot, provider: .openrouter)
+        #expect(controller.menuBarDisplayText(for: .openrouter, snapshot: snapshot, now: now) == "$12.34")
+        #expect(store.automaticQuotaSelection(provider: .openrouter, snapshot: snapshot, now: now) != nil)
+
+        let button = try #require(controller.statusItem.button)
+        _ = controller.menuBarSnapshotUpdatingAutoTooltip(provider: .openrouter, button: button, now: now)
+
+        #expect(button.toolTip == nil)
+
+        let quotaOnlySnapshot = UsageSnapshot(
+            primary: RateWindow(
+                usedPercent: 25,
+                windowMinutes: 1440,
+                resetsAt: now.addingTimeInterval(3600),
+                resetDescription: nil),
+            secondary: nil,
+            updatedAt: now,
+            identity: ProviderIdentitySnapshot(
+                providerID: .openrouter,
+                accountEmail: nil,
+                accountOrganization: nil,
+                loginMethod: nil))
+        store._setSnapshotForTesting(quotaOnlySnapshot, provider: .openrouter)
+        #expect(controller.menuBarDisplayText(for: .openrouter, snapshot: quotaOnlySnapshot, now: now) != nil)
+        _ = controller.menuBarSnapshotUpdatingAutoTooltip(provider: .openrouter, button: button, now: now)
+        #expect(button.toolTip != nil)
+    }
+
+    @Test
+    func `legacy Kiro tooltip follows whether the display mode shows its automatic quota`() throws {
+        let (settings, store, controller) = self.makeController(
+            suiteName: "StatusItemIconObservationSignatureTests-kiro-auto-tooltip",
+            provider: .kiro)
+        defer { controller.releaseStatusItemsForTesting() }
+
+        settings.menuBarShowsBrandIconWithPercent = true
+        settings.menuBarDisplayMode = .percent
+        settings.setMenuBarMetricPreference(.automatic, for: .kiro)
+        let now = Date()
+        let snapshot = KiroUsageSnapshot(
+            planName: "KIRO FREE",
+            accountEmail: "person@example.com",
+            authMethod: "Google",
+            creditsUsed: 0.17,
+            creditsTotal: 50,
+            creditsPercent: 0,
+            bonusCreditsUsed: nil,
+            bonusCreditsTotal: nil,
+            bonusExpiryDays: nil,
+            resetsAt: now.addingTimeInterval(3600),
+            updatedAt: now).toUsageSnapshot()
+        store._setSnapshotForTesting(snapshot, provider: .kiro)
+        #expect(store.automaticQuotaSelection(provider: .kiro, snapshot: snapshot, now: now) != nil)
+        let button = try #require(controller.statusItem.button)
+
+        settings.kiroMenuBarDisplayMode = .automatic
+        #expect(controller.menuBarDisplayText(for: .kiro, snapshot: snapshot, now: now) == "49.83")
+        _ = controller.menuBarSnapshotUpdatingAutoTooltip(provider: .kiro, button: button, now: now)
+        #expect(button.toolTip == nil)
+
+        settings.kiroMenuBarDisplayMode = .hidden
+        _ = controller.menuBarSnapshotUpdatingAutoTooltip(provider: .kiro, button: button, now: now)
+        #expect(button.toolTip == nil)
+
+        settings.kiroMenuBarDisplayMode = .percentLeft
+        _ = controller.menuBarSnapshotUpdatingAutoTooltip(provider: .kiro, button: button, now: now)
+        #expect(button.toolTip != nil)
+    }
+
+    @Test
     func `store icon observation signature ignores non visual snapshot churn`() {
         let (_, store, controller) = self.makeController(
             suiteName: "StatusItemIconObservationSignatureTests-snapshot-metadata")

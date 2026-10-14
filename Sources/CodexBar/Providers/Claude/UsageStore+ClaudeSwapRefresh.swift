@@ -20,6 +20,35 @@ struct ClaudeSwapTransientState {
 }
 
 extension UsageStore {
+    func observeRecentQuotaConsumptionSnapshotChange(
+        provider: ProviderInstanceID,
+        previous: UsageSnapshot?,
+        current: UsageSnapshot?)
+    {
+        // Provider-specific by design: ambient Claude updates must not mix into swap-account activity samples.
+        if provider == UsageProvider.claude.instanceID,
+           self.claudeSwapMenuBarSnapshotOverride(for: provider) != nil
+        {
+            return
+        }
+        self.recentQuotaConsumption.observe(
+            provider: provider,
+            previous: previous,
+            current: current,
+            accountScope: self.automaticQuotaAccountScope(for: provider))
+    }
+
+    func observeClaudeSwapAccountSnapshotChange(from previousSnapshots: [ProviderAccountUsageSnapshot]) {
+        let provider = UsageProvider.claude.instanceID
+        let previous = self.claudeSwapMenuBarSnapshotOverride(for: provider, accountSnapshots: previousSnapshots)
+            ?? self.snapshot(for: provider)
+        self.recentQuotaConsumption.observe(
+            provider: provider,
+            previous: previous,
+            current: self.menuBarSnapshot(for: provider),
+            accountScope: self.automaticQuotaAccountScope(for: provider))
+    }
+
     /// True when the opt-in claude-swap adapter should run alongside the
     /// ambient Claude refresh. Listing is read-only; explicit account activation
     /// stays external-process-owned and never exposes credentials to CodexBar.
@@ -38,14 +67,18 @@ extension UsageStore {
     /// state a snapshot's age, but the bar icon has no such affordance and
     /// `isStale` tracks provider errors rather than measurement age, so serving
     /// last-known numbers on the bar would present them as current.
-    func claudeSwapMenuBarSnapshotOverride(for instanceID: ProviderInstanceID) -> UsageSnapshot? {
+    func claudeSwapMenuBarSnapshotOverride(
+        for instanceID: ProviderInstanceID,
+        accountSnapshots: [ProviderAccountUsageSnapshot]? = nil) -> UsageSnapshot?
+    {
         guard instanceID == UsageProvider.claude.instanceID else { return nil }
+        let accountSnapshots = accountSnapshots ?? self.claudeSwapAccountSnapshots
         guard ClaudeSwapMenuPrecedence.prefersClaudeSwap(
             provider: .claude,
-            accountCount: self.claudeSwapAccountSnapshots.count,
+            accountCount: accountSnapshots.count,
             showSingleAccount: self.settings.claudeSwapShowSingleAccount)
         else { return nil }
-        guard let active = self.claudeSwapAccountSnapshots.first(where: \.isActive),
+        guard let active = accountSnapshots.first(where: \.isActive),
               !active.usesLastKnownUsage
         else { return nil }
         return active.snapshot

@@ -67,6 +67,18 @@ struct RecentQuotaConsumption {
             .map(\.consumedAt).max()
     }
 
+    func nextResetAt(
+        provider: ProviderInstanceID,
+        snapshot: UsageSnapshot,
+        now: Date,
+        accountScope: String? = nil) -> Date?
+    {
+        self.matchingSamples(provider: provider, snapshot: snapshot, now: now, accountScope: accountScope)
+            .compactMap(\.window.resetsAt)
+            .filter { $0 > now }
+            .min()
+    }
+
     func etaSeconds(
         provider: ProviderInstanceID,
         snapshot: UsageSnapshot,

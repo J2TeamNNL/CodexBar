@@ -157,6 +157,43 @@ struct AutomaticProviderPriorityTests {
         #expect(store.automaticQuotaRefreshDelay(now: self.start.addingTimeInterval(151)) == nil)
     }
 
+    @Test func `explicit metric still wakes when recent activity reaches its reset`() {
+        let store = self.makeStore()
+        store.settings.setMenuBarMetricPreference(.primary, for: .kimi)
+        self.publishWithoutReset(10, after: 0, resetAfter: 150, store: store)
+        self.publishWithoutReset(20, after: 120, resetAfter: 150, store: store)
+
+        let delay = store.automaticQuotaRefreshDelay(now: self.start.addingTimeInterval(120))
+
+        #expect(abs((delay ?? 0) - 30.1) < 0.001)
+    }
+
+    @Test func `claude spend only automatic explanation uses the extra usage label`() throws {
+        let store = self.makeStore()
+        store.settings.setMenuBarMetricPreference(.automatic, for: .claude)
+        let cost = ProviderCostSnapshot(
+            used: 25,
+            limit: 100,
+            currencyCode: "USD",
+            period: "Spend limit",
+            updatedAt: self.start)
+        let source = UsageSnapshot(primary: nil, secondary: nil, providerCost: cost, updatedAt: self.start)
+        let spendWindow = try #require(source.claudeMonthlySpendWindow?.window)
+        let snapshot = UsageSnapshot(
+            primary: spendWindow,
+            secondary: nil,
+            providerCost: cost,
+            updatedAt: self.start)
+
+        let explanation = try #require(store.automaticQuotaExplanation(
+            provider: .claude,
+            snapshot: snapshot,
+            now: self.start))
+
+        #expect(explanation.contains("Extra usage"))
+        #expect(!explanation.contains("Session"))
+    }
+
     @Test func `provider configuration changes immediately invalidate recent activity`() {
         let store = self.makeStore()
         self.publish(90, provider: .claude, after: 0, store: store)

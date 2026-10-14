@@ -6,7 +6,13 @@ extension UsageStore {
         let account = instanceID.firstPartyProvider.flatMap {
             self.settings.effectiveSelectedTokenAccount(for: $0)?.id.uuidString
         } ?? "ambient"
-        return "\(self.settings.providerConfigRevision(forInstanceID: instanceID)):\(account)"
+        let scope = "\(self.settings.providerConfigRevision(forInstanceID: instanceID)):\(account)"
+        if self.claudeSwapMenuBarSnapshotOverride(for: instanceID) != nil,
+           let swapAccount = self.claudeSwapAccountSnapshots.first(where: \.isActive)?.id
+        {
+            return "\(scope):\(swapAccount.source):\(swapAccount.opaqueID)"
+        }
+        return scope
     }
 
     /// Reevaluate time-dependent selection even with manual refresh and a static percentage layout.
@@ -30,6 +36,14 @@ extension UsageStore {
                 accountScope: self.automaticQuotaAccountScope(for: provider.instanceID))
             {
                 delays.append(max(0.1, activity.addingTimeInterval(15 * 60).timeIntervalSince(now) + 0.1))
+                if let reset = self.recentQuotaConsumption.nextResetAt(
+                    provider: instanceID,
+                    snapshot: snapshot,
+                    now: now,
+                    accountScope: self.automaticQuotaAccountScope(for: provider.instanceID))
+                {
+                    delays.append(min(60, reset.timeIntervalSince(now) + 0.1))
+                }
             }
             // Stored Auto tokens are independent of the legacy metric picker.
             guard usesLayoutAutomaticWindow
@@ -52,6 +66,7 @@ extension UsageStore {
         -> AutomaticQuotaSelection.Selection?
     {
         let candidates: [RateWindow]
+        // Provider-specific by design: Codex bar quotas follow its consumer projection lanes.
         if provider == .codex {
             let projection = self.codexConsumerProjection(surface: .menuBar, snapshotOverride: snapshot, now: now)
             let quotaLanes = projection.displayedRateLanes(showOptionalCreditsAndExtraUsage: false)
@@ -87,16 +102,18 @@ extension UsageStore {
 
     func automaticQuotaExplanation(provider: UsageProvider, snapshot: UsageSnapshot?, now: Date = Date()) -> String? {
         guard let snapshot,
-              self.settings.menuBarMetricPreference(for: provider, snapshot: snapshot) == .automatic,
               let selection = self.automaticQuotaSelection(provider: provider, snapshot: snapshot, now: now)
         else { return nil }
         let window = selection.window
         let title: String
+        // Provider-specific by design: Codex lanes and Claude spend-only quotas have distinct labels.
         if provider == .codex {
             let projection = self.codexConsumerProjection(surface: .menuBar, snapshotOverride: snapshot, now: now)
             let lane = projection.visibleRateLanes.first { projection.sourceRateWindow(for: $0) == window } ?? .session
             title = CodexConsumerProjection.rateTitle(
                 lane: lane, windowMinutes: window.windowMinutes, sessionLabel: "Session", weeklyLabel: "Weekly")
+        } else if provider == .claude, snapshot.claudeMonthlySpendWindow?.window == window {
+            title = L("Extra usage")
         } else if let named = snapshot.extraRateWindows?.first(where: { $0.window == window }) {
             title = named.title
         } else {

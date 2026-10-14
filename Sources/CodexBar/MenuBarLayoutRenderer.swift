@@ -84,6 +84,8 @@ struct MenuBarLayoutRenderData: Hashable {
     let automaticPace: String?
     let runsOut: String?
     let balance: String?
+    var tokensPerMinute: Int?
+    var tokensSparkline: MenuBarTokensSparkline?
     let costToday: String?
     let cost30d: String?
     /// Numeric twins of the display strings above, for conditional predicates.
@@ -661,6 +663,9 @@ final class MenuBarLayoutRenderer {
         {
             return rendered
         }
+        if let rendered = self.renderThroughputItem(item, data: data, style: style, options: options) {
+            return rendered
+        }
         if let rendered = self.renderUsageMeterItem(
             item,
             data: data,
@@ -764,8 +769,8 @@ final class MenuBarLayoutRenderer {
                 self.missingValue,
                 accessibilityText: L("menu_bar_layout_conditional_unavailable"),
                 attributes: style.attributes)
-        case .providerName, .accountLabel, .lanePercent, .extraPercent:
-            preconditionFailure("Provider text tokens should render before the main switch")
+        case .providerName, .accountLabel, .lanePercent, .extraPercent, .tokensPerMinute, .tokensSparkline:
+            preconditionFailure("Provider text and throughput tokens should render before the main switch")
         case .usageBar, .progressBar:
             preconditionFailure("Usage meter tokens should render before the main switch")
         }
@@ -832,13 +837,17 @@ final class MenuBarLayoutRenderer {
     private static func windowPrefix(_ window: PercentWindow, data: MenuBarLayoutRenderData) -> String {
         let rateWindow = self.window(window, data: data)
         let prefix: String
+        let taggedPrefix = Self.taggedSemanticLane(window, provider: data.provider)
+            .flatMap { Self.laneShortLabel($0, provider: data.provider) }
         switch window {
         case .session:
-            prefix = self.primaryLabel(data: data).flatMap(\.first).map { String($0).uppercased() }
+            prefix = taggedPrefix
+                ?? self.primaryLabel(data: data).flatMap(\.first).map { String($0).uppercased() }
                 ?? Self.sessionPrefix(rateWindow)
         case .weekly:
             let secondaryLabel = Self.secondaryLabel(data: data)
-            prefix = secondaryLabel.flatMap(\.first).map { String($0).uppercased() } ?? "W"
+            prefix = taggedPrefix
+                ?? secondaryLabel.flatMap(\.first).map { String($0).uppercased() } ?? "W"
         case .scopedWeekly:
             prefix = data.scopedWeeklyTitle.map { String($0.prefix(1)).uppercased() } ?? "F"
         case .automatic:
@@ -847,8 +856,12 @@ final class MenuBarLayoutRenderer {
         return prefix
     }
 
+    /// A tagged lane announces its own title, so a monthly lane is never read out as "Weekly".
     private static func windowAccessibilityLabel(_ window: PercentWindow, data: MenuBarLayoutRenderData) -> String {
-        switch window {
+        if let lane = self.taggedSemanticLane(window, provider: data.provider) {
+            return data.laneLabels.label(for: lane)
+        }
+        return switch window {
         case .session: self.primaryLabel(data: data) ?? L("Session")
         case .weekly: self.secondaryLabel(data: data) ?? L("Weekly")
         case .scopedWeekly: data.scopedWeeklyTitle ?? L("Scoped weekly")
@@ -909,7 +922,9 @@ final class MenuBarLayoutRenderer {
         let accessibility = resolvedValue.isAvailable
             ? L("%@ %@", label, resolvedValue.text)
             : L("%@ unavailable", label)
-        return self.textToken(resolvedValue.text, accessibilityText: accessibility, attributes: attributes)
+        let display = Self.laneShortLabel(lane, provider: data.provider)
+            .map { "\($0) \(resolvedValue.text)" } ?? resolvedValue.text
+        return self.textToken(display, accessibilityText: accessibility, attributes: attributes)
     }
 
     private static func extraPercentToken(
@@ -929,8 +944,12 @@ final class MenuBarLayoutRenderer {
         let accessibility = resolvedValue.isAvailable
             ? L("%@ %@", title, resolvedValue.text)
             : L("%@ unavailable", title)
+        let shortLabel = ProviderDescriptorRegistry.descriptor(for: data.provider)
+            .menuBarMetrics.namedExtraShortLabels[id]
         return self.textToken(
-            L("%@ %@", title, resolvedValue.text), accessibilityText: accessibility, attributes: attributes)
+            L("%@ %@", shortLabel ?? title, resolvedValue.text),
+            accessibilityText: accessibility,
+            attributes: attributes)
     }
 
     private static func percentValue(
@@ -1164,6 +1183,81 @@ final class MenuBarLayoutRenderer {
             return size == .small ? 8 : 9
         }
         return size == .small ? 14 : 18
+    }
+}
+
+extension MenuBarLayoutRenderer {
+    /// Tokens-per-minute text and graph, kept out of the class body's main switch.
+    private static func renderThroughputItem(
+        _ item: MenuBarLayoutToken,
+        data: MenuBarLayoutRenderData,
+        style: TokenStyle,
+        options: MenuBarLayoutRenderOptions)
+        -> (value: NSAttributedString, accessibilityText: String?)?
+    {
+        switch item {
+        case .tokensPerMinute:
+            self.optionalTextToken(
+                data.tokensPerMinute.map { ProviderThroughputSection.count($0) + "/min" },
+                unavailableLabel: L("%@ unavailable", L("Tokens / min")),
+                attributes: style.attributes)
+        case .tokensSparkline:
+            self.sparklineToken(data: data, style: style, options: options)
+        default:
+            nil
+        }
+    }
+
+    private static func sparklineToken(
+        data: MenuBarLayoutRenderData,
+        style: TokenStyle,
+        options: MenuBarLayoutRenderOptions)
+        -> (value: NSAttributedString, accessibilityText: String?)
+    {
+        guard let graph = data.tokensSparkline,
+              let image = graph.image(height: style.iconHeight, highlighted: options.isHighlighted)
+        else {
+            return self.textToken(
+                self.missingValue,
+                accessibilityText: L("%@ unavailable", L("Tokens / min graph")),
+                attributes: style.attributes)
+        }
+        let attachment = NSTextAttachment()
+        attachment.image = Self.attachmentImage(image, tint: style.foregroundColor)
+        attachment.bounds = NSRect(
+            x: 0,
+            y: ((style.font.capHeight - style.iconHeight) / 2).rounded(),
+            width: image.size.width,
+            height: style.iconHeight)
+        let value = NSMutableAttributedString(attachment: attachment)
+        value.addAttributes(style.attributes, range: NSRange(location: 0, length: value.length))
+        return (value, L("Tokens per minute, latest %@", graph.latest.map(ProviderThroughputSection.count) ?? "—"))
+    }
+
+    /// Provider-declared menu bar tag for a lane; nil keeps the lane's percentage bare.
+    private static func laneShortLabel(_ lane: MenuBarLayoutLane, provider: UsageProvider) -> String? {
+        let labels = ProviderDescriptorRegistry.descriptor(for: provider).menuBarMetrics.laneShortLabels
+        return switch lane {
+        case .primary: labels[.primary]
+        case .secondary: labels[.secondary]
+        case .tertiary: labels[.tertiary]
+        }
+    }
+
+    /// The tagged lane backing a session/weekly percentage, so a provider with explicit lane tags never falls
+    /// back to colliding first-letter prefixes; nil when the window maps to no tagged lane.
+    private static func taggedSemanticLane(_ window: PercentWindow, provider: UsageProvider) -> MenuBarLayoutLane? {
+        let presentation = ProviderDescriptorRegistry.descriptor(for: provider).presentation
+        let primaryWindow = PercentWindow.forSemanticWindow(presentation.primarySemanticWindow)
+        let lane: MenuBarLayoutLane? = if window == primaryWindow {
+            .primary
+        } else if window == PercentWindow.forSemanticWindow(presentation.secondarySemanticWindow) {
+            .secondary
+        } else {
+            nil
+        }
+        guard let lane, self.laneShortLabel(lane, provider: provider) != nil else { return nil }
+        return lane
     }
 }
 

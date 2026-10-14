@@ -53,7 +53,8 @@ struct ProvidersPane: View {
     }
 
     var body: some View {
-        let unfilteredModel = self.unfilteredMenuCardModel(for: self.provider)
+        let unfilteredModel = UsageMenuCardView.Model.make(self.store.menuCardInput(
+            for: self.provider, context: .settings))
         // Provider-specific by design: only Codex has managed OAuth account snapshots for this shared settings view.
         let overview = self.provider == .codex ? self.store.codexAccountUsageOverview { accountIDs in
             Task { @MainActor in
@@ -62,7 +63,9 @@ struct ProvidersPane: View {
                 }
             }
         } : nil
-        let usageItems = ((overview?.usageItems ?? []) + unfilteredModel.usageItemDescriptors(
+        let visibilityModel = UsageMenuCardView.Model.make(self.store.menuCardInput(
+            for: self.provider, context: .settings, optionalUsageOverride: true))
+        let usageItems = ((overview?.usageItems ?? []) + visibilityModel.usageItemDescriptors(
             includingHidden: self.settings.hiddenUsageItemIDs(for: self.provider),
             hidePersonalInfo: self.settings.hidePersonalInfo))
             .reduce(into: [ProviderUsageItemDescriptor]()) { items, item in
@@ -83,6 +86,7 @@ struct ProvidersPane: View {
             settingsToggles: self.extraSettingsToggles(for: self.provider),
             settingsFields: self.extraSettingsFields(for: self.provider),
             settingsDirectoryLists: self.extraSettingsDirectoryLists(for: self.provider),
+            settingsModelLimits: self.extraSettingsModelLimits(for: self.provider),
             settingsActions: self.extraSettingsActions(for: self.provider),
             settingsTokenAccounts: self.tokenAccountDescriptor(for: self.provider),
             settingsOrganizations: self.extraSettingsOrganizations(for: self.provider),
@@ -411,6 +415,11 @@ struct ProvidersPane: View {
             .filter { $0.isVisible?() ?? true }
     }
 
+    private func extraSettingsModelLimits(for provider: UsageProvider) -> [ProviderSettingsModelLimitsDescriptor] {
+        ProviderCatalog.implementation(for: provider)?
+            .settingsModelLimits(context: self.makeSettingsContext(provider: provider)) ?? []
+    }
+
     private func extraSettingsDirectoryLists(for provider: UsageProvider) -> [ProviderSettingsDirectoryListDescriptor] {
         ProviderCatalog.implementation(for: provider)?
             .settingsDirectoryLists(context: self.makeSettingsContext(provider: provider)) ?? []
@@ -551,10 +560,6 @@ struct ProvidersPane: View {
             runLoginFlow: {
                 await self.runProviderLoginFlow(provider)
             })
-    }
-
-    private func unfilteredMenuCardModel(for provider: UsageProvider) -> UsageMenuCardView.Model {
-        UsageMenuCardView.Model.make(self.store.menuCardInput(for: provider, context: .settings))
     }
 
     func openAIWebDiagnostic(for provider: UsageProvider) -> String? {

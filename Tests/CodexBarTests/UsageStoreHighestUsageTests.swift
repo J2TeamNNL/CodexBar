@@ -87,6 +87,7 @@ struct UsageStoreHighestUsageTests {
                 windowMinutes: 300,
                 resetsAt: now.addingTimeInterval(1800),
                 resetDescription: nil),
+            secondary: nil,
             updatedAt: now)
         let opencode = UsageSnapshot(
             primary: RateWindow(

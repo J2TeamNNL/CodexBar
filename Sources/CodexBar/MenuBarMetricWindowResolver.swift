@@ -25,7 +25,10 @@ enum MenuBarMetricWindowResolver {
             return window
         case let .automaticCandidates(windows):
             return AutomaticQuotaSelection.select(
-                windows: windows, provider: provider, now: now, dataConfidence: snapshot.dataConfidence)?.window
+                candidates: AutomaticQuotaSelection.candidates(windows: windows, snapshot: snapshot),
+                provider: provider,
+                now: now,
+                dataConfidence: snapshot.dataConfidence)?.window
         case .unhandled:
             break
         }
@@ -47,7 +50,7 @@ enum MenuBarMetricWindowResolver {
             return Self.averageWindow(snapshot: snapshot, supportsAverage: supportsAverage)
         case .automatic:
             return AutomaticQuotaSelection.select(
-                windows: [snapshot.primary, snapshot.secondary, snapshot.tertiary].compactMap(\.self),
+                candidates: AutomaticQuotaSelection.candidates(snapshot: snapshot),
                 provider: provider,
                 now: now,
                 dataConfidence: snapshot.dataConfidence)?.window

@@ -3,42 +3,77 @@ import Foundation
 
 /// Snapshot-only ordering shared by Auto windows and the unified highest-usage icon.
 enum AutomaticQuotaSelection {
+    struct Candidate {
+        let window: RateWindow
+        let paceSlot: ProviderPaceSlot?
+    }
+
     struct Selection {
         let window: RateWindow
         let eta: TimeInterval?
+        let candidate: Candidate
     }
 
     static func select(
-        windows: [RateWindow],
+        candidates: [Candidate],
         provider: UsageProvider,
         now: Date,
         dataConfidence: UsageDataConfidence = .unknown) -> Selection?
     {
-        windows.compactMap {
-            self.selection(window: $0, provider: provider, now: now, dataConfidence: dataConfidence)
+        candidates.compactMap {
+            self.selection(candidate: $0, provider: provider, now: now, dataConfidence: dataConfidence)
         }.reduce(nil) { best, candidate in
             guard let best else { return candidate }
             return self.precedes(best, candidate) ? candidate : best
         }
     }
 
+    static func candidates(windows: [RateWindow], snapshot: UsageSnapshot) -> [Candidate] {
+        windows.map { window in
+            Candidate(window: window, paceSlot: self.paceSlot(for: window, in: snapshot))
+        }
+    }
+
+    static func candidates(snapshot: UsageSnapshot) -> [Candidate] {
+        [
+            snapshot.primary.map { Candidate(window: $0, paceSlot: .primary) },
+            snapshot.secondary.map { Candidate(window: $0, paceSlot: .secondary) },
+            snapshot.tertiary.map { Candidate(window: $0, paceSlot: .tertiary) },
+        ].compactMap(\.self)
+    }
+
+    static func paceSlot(for window: RateWindow, in snapshot: UsageSnapshot) -> ProviderPaceSlot? {
+        let matchingSlots: [ProviderPaceSlot] = [
+            (snapshot.primary, ProviderPaceSlot.primary),
+            (snapshot.secondary, ProviderPaceSlot.secondary),
+            (snapshot.tertiary, ProviderPaceSlot.tertiary),
+        ].compactMap { sourceSlot in
+            sourceSlot.0 == window ? sourceSlot.1 : nil
+        }
+        return matchingSlots.count == 1 ? matchingSlots.first : nil
+    }
+
     static func selection(
-        window: RateWindow,
+        candidate: Candidate,
         provider: UsageProvider,
         now: Date,
         dataConfidence: UsageDataConfidence) -> Selection?
     {
+        let window = candidate.window
         guard !window.isSyntheticPlaceholder, window.usedPercent.isFinite, window.usedPercent >= 0 else { return nil }
         let capability = ProviderDescriptorRegistry.descriptor(for: provider).pace
+        let supportsLanePace = candidate.paceSlot.map {
+            capability.resolvedKind(slot: $0, window: window, now: now) != nil
+        } ?? capability.supportsResetWindowPace(window: window, now: now)
         var eta: TimeInterval?
-        if capability.allowsPace(dataConfidence: dataConfidence), window.windowMinutes != nil,
+        if capability.allowsPace(dataConfidence: dataConfidence), supportsLanePace, window.windowMinutes != nil,
            let pace = UsagePace.weekly(window: capability.resolvedResetWindowForPace(window), now: now),
            pace.expectedUsedPercent >= 3, let seconds = pace.etaSeconds, seconds.isFinite, seconds > 0,
            let reset = window.resetsAt, seconds < reset.timeIntervalSince(now)
         {
             eta = seconds
         }
-        return Selection(window: window, eta: eta)
+        return Selection(window: window, eta: eta, candidate: candidate)
     }
 
     static func precedes(_ lhs: Selection, _ rhs: Selection) -> Bool {

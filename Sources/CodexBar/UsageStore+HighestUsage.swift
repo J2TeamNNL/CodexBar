@@ -15,13 +15,25 @@ extension UsageStore {
                   candidateSet?.contains(provider) ?? true,
                   let snapshot = self.menuBarSnapshot(for: instanceID)
             else { continue }
-            guard let window = self.menuBarMetricWindowForHighestUsage(
+            let automatic = self.settings.menuBarMetricPreference(for: provider, snapshot: snapshot) == .automatic
+            let candidate: AutomaticQuotaSelection.Candidate? = if provider == .codex, automatic {
+                self.codexConsumerProjection(
+                    surface: .menuBar,
+                    snapshotOverride: snapshot,
+                    now: now).automaticMenuBarSelection()?.candidate
+            } else if let window = self.menuBarMetricWindowForHighestUsage(
                 provider: provider,
                 snapshot: snapshot,
                 now: now)
-            else {
-                continue
+            {
+                AutomaticQuotaSelection.Candidate(
+                    window: window,
+                    paceSlot: automatic ? AutomaticQuotaSelection.paceSlot(for: window, in: snapshot) : nil)
+            } else {
+                nil
             }
+            guard let candidate else { continue }
+            let window = candidate.window
             let percent = window.usedPercent
             guard !self.shouldExcludeFromHighestUsage(
                 provider: provider,
@@ -31,11 +43,15 @@ extension UsageStore {
             else {
                 continue
             }
-            let automatic = self.settings.menuBarMetricPreference(for: provider, snapshot: snapshot) == .automatic
             guard let selection = AutomaticQuotaSelection.selection(
-                window: window, provider: provider, now: now, dataConfidence: snapshot.dataConfidence)
+                candidate: candidate,
+                provider: provider,
+                now: now,
+                dataConfidence: snapshot.dataConfidence)
             else { continue }
-            let priority = automatic ? selection : .init(window: window, eta: nil)
+            let priority = automatic
+                ? selection
+                : AutomaticQuotaSelection.Selection(window: window, eta: nil, candidate: candidate)
             if highest.map({ AutomaticQuotaSelection.precedes($0.selection, priority) }) ?? true {
                 highest = (provider, priority)
             }

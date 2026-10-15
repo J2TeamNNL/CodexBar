@@ -268,6 +268,7 @@ struct CodexConsumerProjection {
     let extraUsageCost: ProviderCostSnapshot?
 
     private let rateWindowsByLane: [RateLane: RateWindow]
+    private let paceSlotsByLane: [RateLane: ProviderPaceSlot]
     private let codeReviewRemainingPercent: Double?
     private let codeReviewLimit: RateWindow?
     private let evaluationTime: Date
@@ -281,6 +282,7 @@ struct CodexConsumerProjection {
         let rateWindowsByLane = self.rateWindowsByLane(
             snapshot: context.snapshot,
             monthlyCreditLimit: self.monthlyCreditLimit(surface: surface, context: context))
+        let paceSlotsByLane = self.sourcePaceSlotsByLane(snapshot: context.snapshot)
         let visibleRateLanes = self.visibleRateLanes(from: rateWindowsByLane, snapshot: context.snapshot)
         let planUtilizationLanes = self.planUtilizationLanes(from: rateWindowsByLane)
 
@@ -340,6 +342,7 @@ struct CodexConsumerProjection {
             hasCreditsHistory: hasCreditsHistory,
             extraUsageCost: extraUsageCost,
             rateWindowsByLane: rateWindowsByLane,
+            paceSlotsByLane: paceSlotsByLane,
             codeReviewRemainingPercent: dashboardVisibility == .attached ? dashboard?.codeReviewRemainingPercent : nil,
             codeReviewLimit: dashboardVisibility == .attached ? dashboard?.codeReviewLimit : nil,
             evaluationTime: context.now)
@@ -385,20 +388,35 @@ struct CodexConsumerProjection {
     }
 
     /// Rank quota lanes without letting optional credits hide a genuine weekly quota.
-    func automaticMenuBarWindow() -> RateWindow? {
+    func automaticMenuBarSelection() -> AutomaticQuotaSelection.Selection? {
         let quotaLanes = self.displayedRateLanes(showOptionalCreditsAndExtraUsage: false)
-        let windows = (quotaLanes.isEmpty ? self.visibleRateLanes : quotaLanes).compactMap {
-            self.menuBarSelectableRateWindow(for: $0)
+        let candidates = (quotaLanes.isEmpty ? self.visibleRateLanes : quotaLanes).compactMap { lane in
+            self.menuBarSelectableRateWindow(for: lane).map { window in
+                AutomaticQuotaSelection.Candidate(window: window, paceSlot: self.paceSlotsByLane[lane])
+            }
         }
         guard let weekly = self.menuBarSelectableRateWindow(for: .weekly),
-              windows.contains(where: {
-                  $0.windowMinutes.map { $0 > Self.weeklyWindowMinutes } ?? false
+              candidates.contains(where: {
+                  $0.window.windowMinutes.map { $0 > Self.weeklyWindowMinutes } ?? false
               })
         else {
             return AutomaticQuotaSelection.select(
-                windows: windows, provider: .codex, now: self.evaluationTime)?.window
+                candidates: candidates,
+                provider: .codex,
+                now: self.evaluationTime)
         }
-        return weekly
+        let candidate = AutomaticQuotaSelection.Candidate(
+            window: weekly,
+            paceSlot: self.paceSlotsByLane[.weekly])
+        return AutomaticQuotaSelection.selection(
+            candidate: candidate,
+            provider: .codex,
+            now: self.evaluationTime,
+            dataConfidence: .unknown)
+    }
+
+    func automaticMenuBarWindow() -> RateWindow? {
+        self.automaticMenuBarSelection()?.window
     }
 
     static func rateTitle(
@@ -515,6 +533,20 @@ struct CodexConsumerProjection {
             resetsAt: monthlyCreditLimit.resetsAt,
             resetDescription: nil)
         return windowsByLane
+    }
+
+    private static func sourcePaceSlotsByLane(snapshot: UsageSnapshot?) -> [RateLane: ProviderPaceSlot] {
+        guard let snapshot else { return [:] }
+        var slotsByLane: [RateLane: ProviderPaceSlot] = [:]
+        let slottedWindows: [(RateWindow?, SnapshotSlot, ProviderPaceSlot)] = [
+            (snapshot.primary, .primary, .primary),
+            (snapshot.secondary, .secondary, .secondary),
+        ]
+        for (window, sourceSlot, paceSlot) in slottedWindows {
+            guard let (lane, _) = self.classifyRateWindow(window, slot: sourceSlot) else { continue }
+            slotsByLane[lane] = paceSlot
+        }
+        return slotsByLane
     }
 
     private static func visibleRateLanes(

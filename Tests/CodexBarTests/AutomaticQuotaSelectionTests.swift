@@ -12,7 +12,11 @@ struct AutomaticQuotaSelectionTests {
         let weekly = self.window(60, minutes: 10080, remaining: 6 * 86400)
         let session = self.window(60, minutes: 300, remaining: 4 * 3600)
         let selected = AutomaticQuotaSelection.select(
-            windows: [highUsage, weekly, session],
+            candidates: [
+                .init(window: highUsage, paceSlot: nil),
+                .init(window: weekly, paceSlot: .secondary),
+                .init(window: session, paceSlot: .primary),
+            ],
             provider: .claude,
             now: self.now)
         #expect(selected?.window == session)
@@ -25,7 +29,11 @@ struct AutomaticQuotaSelectionTests {
         let highUsage = RateWindow(usedPercent: 90, windowMinutes: nil, resetsAt: nil, resetDescription: "first")
         let tied = RateWindow(usedPercent: 90, windowMinutes: nil, resetsAt: nil, resetDescription: "second")
         let selected = AutomaticQuotaSelection.select(
-            windows: [immature, highUsage, tied],
+            candidates: [
+                .init(window: immature, paceSlot: .primary),
+                .init(window: highUsage, paceSlot: nil),
+                .init(window: tied, paceSlot: nil),
+            ],
             provider: .claude,
             now: self.now)
         #expect(selected?.window == highUsage)
@@ -44,9 +52,43 @@ struct AutomaticQuotaSelectionTests {
             resetDescription: nil,
             isSyntheticPlaceholder: true)
         #expect(AutomaticQuotaSelection.select(
-            windows: [invalid, placeholder, session, exhausted],
+            candidates: [
+                .init(window: invalid, paceSlot: nil),
+                .init(window: placeholder, paceSlot: nil),
+                .init(window: session, paceSlot: .primary),
+                .init(window: exhausted, paceSlot: .secondary),
+            ],
             provider: .claude,
             now: self.now)?.window == exhausted)
+    }
+
+    @Test
+    func `forecast requires the provider to support the candidate lane`() {
+        let primaryWindow = self.window(99, minutes: 300, remaining: 1800)
+        let secondaryWindow = self.window(95, minutes: 10080, remaining: 86400)
+        let snapshot = UsageSnapshot(
+            primary: primaryWindow,
+            secondary: secondaryWindow,
+            updatedAt: self.now)
+        let primary = AutomaticQuotaSelection.selection(
+            candidate: .init(window: primaryWindow, paceSlot: .primary),
+            provider: .opencode,
+            now: self.now,
+            dataConfidence: snapshot.dataConfidence)
+        let secondary = AutomaticQuotaSelection.selection(
+            candidate: .init(window: secondaryWindow, paceSlot: .secondary),
+            provider: .opencode,
+            now: self.now,
+            dataConfidence: snapshot.dataConfidence)
+
+        #expect(primary?.eta == nil)
+        #expect(secondary?.eta != nil)
+        #expect(MenuBarMetricWindowResolver.rateWindow(
+            preference: .automatic,
+            provider: .opencode,
+            snapshot: snapshot,
+            supportsAverage: false,
+            now: self.now) == snapshot.secondary)
     }
 
     @Test

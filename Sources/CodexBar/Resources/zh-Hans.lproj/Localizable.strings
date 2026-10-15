@@ -682,6 +682,12 @@
 "link_website" = "网站";
 "link_twitter" = "Twitter";
 "link_email" = "电子邮件";
+"link_acknowledgements" = "致谢";
+"acknowledgements_footer" = "CodexBar 使用了以下开源项目构建。";
+"acknowledgements_others" = "其他 %d 人";
+"acknowledgements_author" = "作者";
+"acknowledgements_authors" = "作者";
+"acknowledgements_license" = "许可证";
 "check_updates_auto" = "自动检查更新";
 "update_channel" = "更新频道";
 "check_for_updates" = "检查更新…";
@@ -2400,6 +2406,7 @@
 
 "X API cost history is not available." = "X API 费用历史不可用。";
 "Paste a console.x.com Cookie header containing auth_token and ct0." = "粘贴包含 auth_token 和 ct0 的 console.x.com Cookie 请求头。";
+"Paste a platform.claude.com Cookie header containing sessionKey." = "粘贴包含 sessionKey 的 platform.claude.com Cookie 请求头。";
 "Open X Developer Console" = "打开 X 开发者控制台";
 "update_available_notification_body" = "点击打开更新设置并安装新版本。";
 // Structured session performance layout.
@@ -2426,12 +2433,12 @@
 "merged_icon_source_title" = "合并图标来源";
 "merged_icon_source_subtitle" = "选择折叠后的合并图标显示哪个服务提供方。";
 "merged_icon_source_current_selection" = "当前选择";
-"merged_icon_source_highest_usage" = "自动：近期使用和额度耗尽风险";
+"merged_icon_source_highest_usage" = "最高用量";
 "merged_icon_source_frontmost_app" = "最前台的服务提供方应用";
 /* Provider menu bar color */
 "Color by provider" = "按服务商着色";
 
-"show_most_used_provider_subtitle" = "自动优先跟随近期消耗，再选择最可能先耗尽的额度。";
+"show_most_used_provider_subtitle" = "菜单栏会自动显示最接近速率限制的提供商。";
 
 "show_most_used_provider_title" = "显示用量最高的提供商";
 
@@ -2524,11 +2531,6 @@
 "Only enabled providers" = "仅显示已启用";
 "Restore default order" = "恢复默认顺序";
 "Also restores the provider order in the menu bar. Can be undone." = "同时恢复菜单栏中的供应商顺序。可以撤销。";
-"Auto: %@ is exhausted." = "自动：%@ 已耗尽。";
-"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "自动：按近期使用情况，%@ 可能最先耗尽，约需 %ld 分钟（估算）。";
-"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "自动：按当前速度，%@ 可能最先耗尽，约需 %ld 分钟（估算）。";
-"Auto: %@ has the least quota remaining (%ld%% used)." = "自动：%@ 的剩余额度最少（已使用 %ld%%）。";
-"Recent usage detected." = "检测到近期使用。";
 "Local Codex details; excluded from combined totals." = "本地 Codex 详情；不计入合并总计。";
 
 "Auto uses an API key when configured, otherwise browser cookies." = "Auto uses an API key when configured, otherwise browser cookies.";
@@ -2617,3 +2619,7 @@
 "Daily spend · %@" = "每日支出 · %@";
 "Applies to the selected token account “%@”. Each account keeps its own limits." = "适用于所选令牌账户“%@”。每个账户保留各自的限制。";
 "Applies to the OpenAI API key, not to token accounts." = "适用于 OpenAI API 密钥，不适用于令牌账户。";
+/* Claude Platform provider */
+"API credit" = "API 额度";
+"Purchased credit" = "已购买额度";
+"Claude Platform exposes Console credit balance and monthly spend, not local token cost history." = "Claude Platform 显示 Console 额度余额和每月支出，而不是本地 token 成本历史记录。";

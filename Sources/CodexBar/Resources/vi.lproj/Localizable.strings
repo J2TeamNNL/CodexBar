@@ -712,6 +712,12 @@
 "link_website" = "Trang web";
 "link_twitter" = "Twitter";
 "link_email" = "Email";
+"link_acknowledgements" = "Lời cảm ơn";
+"acknowledgements_footer" = "CodexBar được xây dựng bằng các dự án mã nguồn mở này.";
+"acknowledgements_others" = "%d người khác";
+"acknowledgements_author" = "Tác giả";
+"acknowledgements_authors" = "Tác giả";
+"acknowledgements_license" = "Giấy phép";
 "check_updates_auto" = "Tự động kiểm tra các bản cập nhật";
 "update_channel" = "Kênh cập nhật";
 "check_for_updates" = "Kiểm tra các bản cập nhật…";
@@ -2408,6 +2414,7 @@
 
 "X API cost history is not available." = "Không có lịch sử chi phí X API.";
 "Paste a console.x.com Cookie header containing auth_token and ct0." = "Dán tiêu đề Cookie từ console.x.com có chứa auth_token và ct0.";
+"Paste a platform.claude.com Cookie header containing sessionKey." = "Dán tiêu đề Cookie từ platform.claude.com có chứa sessionKey.";
 "Open X Developer Console" = "Mở bảng điều khiển nhà phát triển X";
 "update_available_notification_body" = "Nhấp để mở cài đặt cập nhật và cài đặt phiên bản mới.";
 // Structured session performance layout.
@@ -2434,12 +2441,12 @@
 "merged_icon_source_title" = "Nguồn biểu tượng kết hợp";
 "merged_icon_source_subtitle" = "Chọn nhà cung cấp hiển thị trên biểu tượng kết hợp khi thu gọn.";
 "merged_icon_source_current_selection" = "Lựa chọn hiện tại";
-"merged_icon_source_highest_usage" = "Tự động: mức dùng gần đây và nguy cơ hết hạn mức";
+"merged_icon_source_highest_usage" = "Mức sử dụng cao nhất";
 "merged_icon_source_frontmost_app" = "Ứng dụng nhà cung cấp ở phía trước";
 /* Provider menu bar color */
 "Color by provider" = "Màu theo nhà cung cấp";
 
-"show_most_used_provider_subtitle" = "Tự động ưu tiên mức tiêu thụ gần đây, rồi hạn mức có khả năng hết trước.";
+"show_most_used_provider_subtitle" = "thanh menu được sử dụng nhiều nhất tự động hiển thị Nhà cung cấp gần nhất với giới hạn tốc độ của nó.";
 
 "show_most_used_provider_title" = "Hiển thị Nhà cung cấp";
 
@@ -2532,11 +2539,6 @@
 "Only enabled providers" = "Chỉ nhà cung cấp đã bật";
 "Restore default order" = "Khôi phục thứ tự mặc định";
 "Also restores the provider order in the menu bar. Can be undone." = "Cũng khôi phục thứ tự nhà cung cấp trên thanh menu. Có thể hoàn tác.";
-"Auto: %@ is exhausted." = "Tự động: %@ đã hết hạn mức.";
-"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "Tự động: %@ có thể hết trước, trong khoảng %ld phút theo mức dùng gần đây (ước tính).";
-"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "Tự động: %@ có thể hết trước, trong khoảng %ld phút theo tốc độ hiện tại (ước tính).";
-"Auto: %@ has the least quota remaining (%ld%% used)." = "Tự động: %@ còn ít hạn mức nhất (đã dùng %ld%%).";
-"Recent usage detected." = "Đã phát hiện sử dụng gần đây.";
 "Local Codex details; excluded from combined totals." = "Chi tiết Codex cục bộ; không được tính vào tổng kết hợp.";
 
 "Auto uses an API key when configured, otherwise browser cookies." = "Auto uses an API key when configured, otherwise browser cookies.";
@@ -2626,3 +2628,7 @@
 "Daily spend · %@" = "Chi tiêu hằng ngày · %@";
 "Applies to the selected token account “%@”. Each account keeps its own limits." = "Áp dụng cho tài khoản token đã chọn “%@”. Mỗi tài khoản giữ giới hạn riêng.";
 "Applies to the OpenAI API key, not to token accounts." = "Áp dụng cho khóa API OpenAI, không áp dụng cho các tài khoản token.";
+/* Claude Platform provider */
+"API credit" = "Tín dụng API";
+"Purchased credit" = "Tín dụng đã mua";
+"Claude Platform exposes Console credit balance and monthly spend, not local token cost history." = "Claude Platform hiển thị số dư tín dụng và chi tiêu hàng tháng trên Console, không phải lịch sử chi phí token cục bộ.";

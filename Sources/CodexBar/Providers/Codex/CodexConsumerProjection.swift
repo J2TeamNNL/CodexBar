@@ -384,16 +384,21 @@ struct CodexConsumerProjection {
         return nil
     }
 
-    /// Automatic ranks real quota lanes; optional purchased credits are not a competing quota.
+    /// Rank quota lanes without letting optional credits hide a genuine weekly quota.
     func automaticMenuBarWindow() -> RateWindow? {
         let quotaLanes = self.displayedRateLanes(showOptionalCreditsAndExtraUsage: false)
-        let lanes = quotaLanes.isEmpty ? self.visibleRateLanes : quotaLanes
-        return AutomaticQuotaSelection.select(
-            windows: lanes.compactMap { lane in
-                guard self.menuBarSelectableRateWindow(for: lane) != nil else { return nil }
-                return self.sourceRateWindow(for: lane)
-            },
-            now: self.evaluationTime)?.window
+        let windows = (quotaLanes.isEmpty ? self.visibleRateLanes : quotaLanes).compactMap {
+            self.menuBarSelectableRateWindow(for: $0)
+        }
+        guard let weekly = self.menuBarSelectableRateWindow(for: .weekly),
+              windows.contains(where: {
+                  $0.windowMinutes.map { $0 > Self.weeklyWindowMinutes } ?? false
+              })
+        else {
+            return AutomaticQuotaSelection.select(
+                windows: windows, provider: .codex, now: self.evaluationTime)?.window
+        }
+        return weekly
     }
 
     static func rateTitle(
@@ -732,7 +737,7 @@ extension UsageStore {
         case .primaryAndSecondary:
             return windows.prefix(2).max(by: { $0.usedPercent < $1.usedPercent })
         case .automatic:
-            return self.automaticQuotaSelection(provider: .codex, snapshot: snapshot, now: now)?.window
+            return projection.automaticMenuBarWindow()
         case .primary, .monthlyPlan:
             return first
         }

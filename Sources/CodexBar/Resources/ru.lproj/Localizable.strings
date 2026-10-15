@@ -717,6 +717,12 @@
 "link_website" = "Сайт";
 "link_twitter" = "Twitter";
 "link_email" = "электронная почта";
+"link_acknowledgements" = "Благодарности";
+"acknowledgements_footer" = "CodexBar создан с использованием этих проектов с открытым исходным кодом.";
+"acknowledgements_others" = "ещё %d";
+"acknowledgements_author" = "Автор";
+"acknowledgements_authors" = "Авторы";
+"acknowledgements_license" = "Лицензия";
 "check_updates_auto" = "Автоматическая проверка обновлений";
 "update_channel" = "Канал обновлений";
 "check_for_updates" = "Проверить наличие обновлений…";
@@ -2408,6 +2414,7 @@
 
 "X API cost history is not available." = "История расходов X API недоступна.";
 "Paste a console.x.com Cookie header containing auth_token and ct0." = "Вставьте заголовок Cookie с console.x.com, содержащий auth_token и ct0.";
+"Paste a platform.claude.com Cookie header containing sessionKey." = "Вставьте заголовок Cookie с platform.claude.com, содержащий sessionKey.";
 "Open X Developer Console" = "Открыть консоль разработчика X";
 "update_available_notification_body" = "Нажмите, чтобы открыть настройки обновления и установить новую версию.";
 // Structured session performance layout.
@@ -2434,12 +2441,12 @@
 "merged_icon_source_title" = "Источник объединённого значка";
 "merged_icon_source_subtitle" = "Выберите провайдера для свёрнутого объединённого значка.";
 "merged_icon_source_current_selection" = "Текущий выбор";
-"merged_icon_source_highest_usage" = "Авто: недавнее использование и риск исчерпания квоты";
+"merged_icon_source_highest_usage" = "Наибольшее использование";
 "merged_icon_source_frontmost_app" = "Приложение провайдера на переднем плане";
 /* Provider menu bar color */
 "Color by provider" = "Цвет по провайдеру";
 
-"show_most_used_provider_subtitle" = "Авто учитывает недавний расход, затем квоту, которая вероятнее всего закончится первой.";
+"show_most_used_provider_subtitle" = "В строке меню автоматически отображается провайдер, ближайший к лимиту.";
 
 "show_most_used_provider_title" = "Показывать провайдера с наибольшим использованием";
 
@@ -2532,11 +2539,6 @@
 "Only enabled providers" = "Только активные провайдеры";
 "Restore default order" = "Восстановить исходный порядок";
 "Also restores the provider order in the menu bar. Can be undone." = "Также восстанавливает порядок провайдеров в строке меню. Действие можно отменить.";
-"Auto: %@ is exhausted." = "Авто: квота %@ исчерпана.";
-"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "Авто: квота %@ может закончиться первой примерно через %ld мин при недавнем расходе (оценка).";
-"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "Авто: квота %@ может закончиться первой примерно через %ld мин при текущем темпе (оценка).";
-"Auto: %@ has the least quota remaining (%ld%% used)." = "Авто: у %@ осталось меньше всего квоты (использовано %ld%%).";
-"Recent usage detected." = "Обнаружено недавнее использование.";
 "Local Codex details; excluded from combined totals." = "Локальные данные Codex; не учитываются в общих итогах.";
 
 "Auto uses an API key when configured, otherwise browser cookies." = "Auto uses an API key when configured, otherwise browser cookies.";
@@ -2626,3 +2628,7 @@
 "Daily spend · %@" = "Расходы за день · %@";
 "Applies to the selected token account “%@”. Each account keeps its own limits." = "Применяется к выбранной учётной записи токена «%@». У каждой учётной записи свои лимиты.";
 "Applies to the OpenAI API key, not to token accounts." = "Применяется к ключу API OpenAI, а не к учётным записям токенов.";
+/* Claude Platform provider */
+"API credit" = "Кредит API";
+"Purchased credit" = "Купленный кредит";
+"Claude Platform exposes Console credit balance and monthly spend, not local token cost history." = "Claude Platform показывает баланс кредитов и ежемесячные расходы в Console, а не локальную историю затрат на токены.";

@@ -3,47 +3,42 @@ import Foundation
 
 @MainActor
 extension UsageStore {
-    /// Favors observed recent consumption, then depletion risk, within the enabled candidate providers.
-    /// A refresh alone is not activity. Providers that are fully rate-limited remain excluded.
+    /// Returns the enabled candidate closest to depletion, using the same forecast as Auto.
+    /// Excludes providers that are fully rate-limited.
     func providerWithHighestUsage(candidateProviders: [UsageProvider]? = nil, now: Date = Date())
         -> (provider: UsageProvider, usedPercent: Double)?
     {
         let candidateSet = candidateProviders.map(Set.init)
-        var candidates: [(provider: UsageProvider, selection: AutomaticQuotaSelection.Selection, activity: Date?)] = []
+        var highest: (provider: UsageProvider, selection: AutomaticQuotaSelection.Selection)?
         for instanceID in self.enabledProviders() {
             guard let provider = instanceID.firstPartyProvider,
                   candidateSet?.contains(provider) ?? true,
-                  let snapshot = self.menuBarSnapshot(for: instanceID),
-                  let window = self.menuBarMetricWindowForHighestUsage(
-                      provider: provider,
-                      snapshot: snapshot,
-                      now: now),
-                  window.usedPercent.isFinite,
-                  !self.shouldExcludeFromHighestUsage(
-                      provider: provider, snapshot: snapshot, metricPercent: window.usedPercent, now: now)
+                  let snapshot = self.menuBarSnapshot(for: instanceID)
             else { continue }
-            let activity = self.recentQuotaConsumption.lastConsumedAt(
-                provider: instanceID,
+            guard let window = self.menuBarMetricWindowForHighestUsage(
+                provider: provider,
                 snapshot: snapshot,
-                now: now,
-                accountScope: self.automaticQuotaAccountScope(for: instanceID))
-            let automatic = self.settings.menuBarMetricPreference(for: provider, snapshot: snapshot) == .automatic
-                ? self.automaticQuotaSelection(provider: provider, snapshot: snapshot, now: now) : nil
-            candidates.append((provider, automatic ?? .init(window: window, forecast: nil), activity))
-        }
-        if let latestActivity = candidates.compactMap(\.activity).max() {
-            // A fixed cohort avoids polling-order churn and pairwise, non-transitive recency comparisons.
-            candidates = candidates.filter { candidate in
-                candidate.activity.map { latestActivity.timeIntervalSince($0) <= 60 } ?? false
+                now: now)
+            else {
+                continue
             }
-        }
-        let highest = candidates.reduce(nil as (
-            provider: UsageProvider,
-            selection: AutomaticQuotaSelection.Selection,
-            activity: Date?)?)
-        { best, candidate in
-            guard let best else { return candidate }
-            return AutomaticQuotaSelection.precedes(best.selection, candidate.selection) ? candidate : best
+            let percent = window.usedPercent
+            guard !self.shouldExcludeFromHighestUsage(
+                provider: provider,
+                snapshot: snapshot,
+                metricPercent: percent,
+                now: now)
+            else {
+                continue
+            }
+            let automatic = self.settings.menuBarMetricPreference(for: provider, snapshot: snapshot) == .automatic
+            guard let selection = AutomaticQuotaSelection.selection(
+                window: window, provider: provider, now: now, dataConfidence: snapshot.dataConfidence)
+            else { continue }
+            let priority = automatic ? selection : .init(window: window, eta: nil)
+            if highest.map({ AutomaticQuotaSelection.precedes($0.selection, priority) }) ?? true {
+                highest = (provider, priority)
+            }
         }
         return highest.map { ($0.provider, $0.selection.window.usedPercent) }
     }
@@ -54,11 +49,15 @@ extension UsageStore {
         now: Date) -> RateWindow?
     {
         let effectivePreference = self.settings.menuBarMetricPreference(for: provider, snapshot: snapshot)
+        // Provider-specific by design: these paths depend on live Codex projection and Antigravity user policy.
+        if provider == .antigravity,
+           effectivePreference == .automatic,
+           !self.settings.antigravityPrioritizeExhaustedQuotas
+        {
+            return Self.mostConstrainedAntigravityQuotaSummaryWindow(snapshot: snapshot)
+        }
         if provider == .codex {
             return self.codexMenuBarMetricWindow(snapshot: snapshot, now: now)
-        }
-        if effectivePreference == .automatic {
-            return self.automaticQuotaSelection(provider: provider, snapshot: snapshot, now: now)?.window
         }
         return MenuBarMetricWindowResolver.rateWindow(
             preference: effectivePreference,
@@ -146,8 +145,23 @@ extension UsageStore {
         return true
     }
 
+    private nonisolated static func mostConstrainedAntigravityQuotaSummaryWindow(
+        snapshot: UsageSnapshot)
+        -> RateWindow?
+    {
+        let windows = self.antigravityRenderedQuotaSummaryWindows(snapshot: snapshot)
+        guard !windows.isEmpty else { return nil }
+
+        let usableWindows = windows.filter { $0.usedPercent < 100 }
+        if let maxUsable = usableWindows.max(by: { $0.usedPercent < $1.usedPercent }) {
+            return maxUsable
+        }
+        return windows.max(by: { $0.usedPercent < $1.usedPercent })
+    }
+
     private nonisolated static func antigravityRenderedQuotaSummaryWindows(
-        snapshot: UsageSnapshot) -> [RateWindow]
+        snapshot: UsageSnapshot)
+        -> [RateWindow]
     {
         let windows = IconRemainingResolver.resolvedWindows(snapshot: snapshot, style: .antigravity)
         return [windows.primary, windows.secondary].compactMap(\.self)

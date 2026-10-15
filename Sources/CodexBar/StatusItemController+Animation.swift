@@ -257,7 +257,7 @@ extension StatusItemController {
         let primaryProvider = self.primaryProviderForUnifiedIcon()
         let providerTint = self.providerTintColor(for: primaryProvider, button: button)
         let resolverStyle = self.store.style(for: primaryProvider)
-        let snapshot = self.menuBarSnapshotUpdatingAutoTooltip(provider: primaryProvider, button: button)
+        let snapshot = self.store.menuBarSnapshot(for: primaryProvider.instanceID)
         let warningFlash = self.quotaWarningFlashActive(provider: primaryProvider)
 
         if let rows = self.stackedMergeIconProvidersIfActive(),
@@ -487,7 +487,7 @@ extension StatusItemController {
     func applyIcon(for provider: UsageProvider, phase: Double?) -> Bool {
         guard let button = self.statusItems[provider.instanceID]?.button else { return false }
         let providerTint = self.providerTintColor(for: provider, button: button)
-        let snapshot = self.menuBarSnapshotUpdatingAutoTooltip(provider: provider, button: button)
+        let snapshot = self.store.menuBarSnapshot(for: provider.instanceID)
         // IconRenderer treats these values as a left-to-right "progress fill" percentage; depending on the
         // user setting we pass either "percent left" or "percent used".
         let showUsed = self.settings.usageBarsShowUsed
@@ -882,7 +882,16 @@ extension StatusItemController {
         now: Date = .init()) -> String?
     {
         let mode = self.settings.menuBarDisplayMode
-        if let balance = self.legacyMenuBarBalanceText(provider: provider, snapshot: snapshot, now: now) {
+        let preference = self.settings.menuBarMetricPreference(for: provider, snapshot: snapshot)
+        // Provider-specific by design: legacy preferences select balance text before quota and display modes.
+        let usesBalance = switch provider {
+        case .openrouter: preference == .automatic
+        case .mimo: snapshot?.primary == nil || preference == .secondary
+        case .opencodego, .devpass: snapshot?.primary == nil && snapshot?.secondary == nil
+        case .mistral: self.menuBarMetricWindow(for: provider, snapshot: snapshot, now: now) == nil
+        default: !ProviderDescriptorRegistry.descriptor(for: provider).presentation.menuBarBalanceUsesPrepaidCost
+        }
+        if usesBalance, let balance = MenuBarLayoutBalanceResolver.balance(provider: provider, snapshot: snapshot) {
             return balance
         }
         if provider == .kiro {
@@ -977,20 +986,6 @@ extension StatusItemController {
             resetTimeDisplayStyle: self.settings.resetTimeDisplayStyle,
             showsResetTimeWhenExhausted: self.settings.menuBarShowsResetTimeWhenExhausted,
             now: now)
-    }
-
-    func legacyMenuBarBalanceText(provider: UsageProvider, snapshot: UsageSnapshot?, now: Date) -> String? {
-        let preference = self.settings.menuBarMetricPreference(for: provider, snapshot: snapshot)
-        // Provider-specific by design: legacy preferences select balance text before quota and display modes.
-        let usesBalance = switch provider {
-        case .openrouter: preference == .automatic
-        case .mimo: snapshot?.primary == nil || preference == .secondary
-        case .opencodego, .devpass: snapshot?.primary == nil && snapshot?.secondary == nil
-        case .mistral: self.menuBarMetricWindow(for: provider, snapshot: snapshot, now: now) == nil
-        default: !ProviderDescriptorRegistry.descriptor(for: provider).presentation.menuBarBalanceUsesPrepaidCost
-        }
-        guard usesBalance else { return nil }
-        return MenuBarLayoutBalanceResolver.balance(provider: provider, snapshot: snapshot)
     }
 
     nonisolated static func menuBarLayoutAutomaticText(

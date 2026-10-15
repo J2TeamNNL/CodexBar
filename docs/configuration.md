@@ -15,29 +15,6 @@ The app and CLI share one JSON file for API keys, manual cookie headers, source 
 Keychain holds runtime cookie caches, browser Safe Storage access, and provider OAuth/device-flow credentials where required.
 App settings writes are coalesced. Normal quit finishes any pending configuration write in the background before exiting, including an edit made just before quitting. A failed final write is logged and does not prevent quitting.
 
-## Automatic menu-bar priority
-
-Automatic quota selection compares the provider's eligible limits. An exhausted binding quota takes priority;
-otherwise a quota estimated to run out before its reset is selected by earliest estimated depletion. If no
-usable forecast exists, Auto selects the highest used percentage. For example, a weekly quota at 90% used
-will appear ahead of a five-hour quota at 0%. The indicator tooltip explains the selected quota and labels
-forecasts as estimates. Explicit quota choices retain their existing behavior.
-
-The unified icon's **Auto: recent usage and quota risk** source also follows actual observed consumption.
-An increase between consecutive same-account, same-reset observations establishes recent activity;
-unchanged refreshes do not. Activity expires after 15 minutes. A provider whose consumption is more than
-a minute newer takes precedence over an idle provider; observations within a minute are treated as
-concurrent and ranked by quota risk. Without recent activity, selection falls back to forecast risk and usage.
-Fully blocked providers retain their existing exclusion rules, and the configured Overview subset remains
-authoritative. Manual selection and frontmost-app modes are unchanged.
-
-Recent usage rates are transient, require at least one minute between samples, and are discarded across
-account changes, resets, decreasing counters, and sampling gaps longer than 15 minutes. Auto falls back
-to the existing pace estimate when recent rates are unavailable. Providers retain their quota semantics:
-ordered credit buckets, independent model pools, optional extra spending, and prepaid balances are not
-blindly compared as interchangeable subscription limits. Subscription renewal dates remain billing
-metadata; they do not imply a conversion ratio between session and weekly capacity.
-
 ## Location
 - `CODEXBAR_CONFIG=/path/to/config.json` when set.
 - `$XDG_CONFIG_HOME/codexbar/config.json` when `XDG_CONFIG_HOME` is set to an absolute path. Relative values are
@@ -375,6 +352,13 @@ iCloud projection syncs onward; reset notifications, the additional menu setting
 unless explicitly exported and imported. Import does not modify `config.json` or iCloud's remote-update suppression.
 
 ### Menu bar controls
+
+**Auto** ranks each provider's eligible quota windows from the current snapshot. An exhausted quota comes
+first; otherwise a valid pace forecast that runs out before reset takes priority, with the shortest time to
+depletion first. Without such a forecast, Auto chooses the highest used percentage. Ties keep provider order.
+The unified highest-usage icon uses the same priority for providers set to Auto and displays the selected
+window's actual percentage. Explicit metric choices and provider-specific credit-pool ordering are preserved.
+This uses reported usage, duration, and reset time; it adds no observation history or background timer.
 
 The layout editor includes an optional **Tokens / min** value token (for example `49M/min`) using the provider’s latest reported complete minute. OpenAI supplies it through the **Tokens per minute** provider setting. It uses the same unavailable placeholder as other value tokens when no throughput is available. The optional **Tokens / min graph** token shows the last hour as a compact graph, using the maximum minute in each column and excluding minutes that are still reporting. Drag either token into your layout to enable it; default layouts include neither. The graph uses the status item’s own provider data and the standard unavailable placeholder when there are no reported minutes.
 

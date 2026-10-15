@@ -760,7 +760,7 @@ struct CodexConsumerProjectionTests {
     }
 
     @Test
-    func `automatic menu bar metric chooses the more used thirty day primary`() {
+    func `automatic menu bar metric prefers the weekly window over a thirty day primary`() {
         let store = self.makeStore(suite: "CodexConsumerProjectionTests-30day-automatic")
         let now = Date(timeIntervalSince1970: 1_800_000_000)
         let snapshot = UsageSnapshot(
@@ -781,8 +781,20 @@ struct CodexConsumerProjectionTests {
             snapshotOverride: snapshot,
             now: now)
 
-        #expect(projection.automaticMenuBarWindow()?.windowMinutes == 43200)
-        #expect(store.codexMenuBarMetricWindow(snapshot: snapshot, now: now)?.windowMinutes == 43200)
+        #expect(projection.automaticMenuBarWindow()?.windowMinutes == 10080)
+        #expect(store.codexMenuBarMetricWindow(snapshot: snapshot, now: now)?.windowMinutes == 10080)
+    }
+
+    @Test
+    func `automatic menu bar metric chooses busy weekly quota over empty session`() {
+        let store = self.makeStore(suite: "CodexConsumerProjectionTests-busy-weekly")
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        let snapshot = UsageSnapshot(
+            primary: RateWindow(usedPercent: 0, windowMinutes: 300, resetsAt: nil, resetDescription: nil),
+            secondary: RateWindow(usedPercent: 90, windowMinutes: 10080, resetsAt: nil, resetDescription: nil),
+            updatedAt: now)
+
+        #expect(store.codexMenuBarMetricWindow(snapshot: snapshot, now: now) == snapshot.secondary)
     }
 
     @Test

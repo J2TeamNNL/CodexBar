@@ -713,6 +713,12 @@
 "link_website" = "ウェブサイト";
 "link_twitter" = "Twitter";
 "link_email" = "メール";
+"link_acknowledgements" = "謝辞";
+"acknowledgements_footer" = "CodexBar は以下のオープンソースプロジェクトを利用しています。";
+"acknowledgements_others" = "他 %d 名";
+"acknowledgements_author" = "作者";
+"acknowledgements_authors" = "作者";
+"acknowledgements_license" = "ライセンス";
 "check_updates_auto" = "アップデートを自動的に確認";
 "update_channel" = "アップデートチャンネル";
 "check_for_updates" = "アップデートを確認…";
@@ -2407,6 +2413,7 @@
 
 "X API cost history is not available." = "X API の費用履歴は利用できません。";
 "Paste a console.x.com Cookie header containing auth_token and ct0." = "auth_token と ct0 を含む console.x.com の Cookie ヘッダーを貼り付けてください。";
+"Paste a platform.claude.com Cookie header containing sessionKey." = "sessionKey を含む platform.claude.com の Cookie ヘッダーを貼り付けてください。";
 "Open X Developer Console" = "X 開発者コンソールを開く";
 "update_available_notification_body" = "クリックしてアップデート設定を開き、新しいバージョンをインストールします。";
 // Structured session performance layout.
@@ -2433,12 +2440,12 @@
 "merged_icon_source_title" = "結合アイコンの表示元";
 "merged_icon_source_subtitle" = "折りたたまれた結合アイコンに表示するプロバイダーを選択します。";
 "merged_icon_source_current_selection" = "現在の選択";
-"merged_icon_source_highest_usage" = "自動：最近の使用と割り当ての枯渇リスク";
+"merged_icon_source_highest_usage" = "使用率が最も高いプロバイダー";
 "merged_icon_source_frontmost_app" = "最前面のプロバイダーアプリ";
 /* Provider menu bar color */
 "Color by provider" = "プロバイダー別の色";
 
-"show_most_used_provider_subtitle" = "自動では最近の消費を優先し、次に最も早く使い切る可能性のある割り当てを選びます。";
+"show_most_used_provider_subtitle" = "レート制限に最も近いプロバイダをメニューバーに自動表示します。";
 
 "show_most_used_provider_title" = "最も使用中のプロバイダを表示";
 
@@ -2531,11 +2538,6 @@
 "Only enabled providers" = "有効なプロバイダーのみ";
 "Restore default order" = "既定の順序に戻す";
 "Also restores the provider order in the menu bar. Can be undone." = "メニューバーのプロバイダー順序も戻します。取り消し可能です。";
-"Auto: %@ is exhausted." = "自動：%@ は使い切りました。";
-"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "自動：%@ は最近の使用状況では約 %ld 分で最初に使い切る可能性があります（推定）。";
-"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "自動：%@ は現在のペースでは約 %ld 分で最初に使い切る可能性があります（推定）。";
-"Auto: %@ has the least quota remaining (%ld%% used)." = "自動：%@ の残り割り当てが最も少なくなっています（%ld%% 使用済み）。";
-"Recent usage detected." = "最近の使用を検出しました。";
 "Local Codex details; excluded from combined totals." = "ローカルの Codex 詳細。合計には含まれません。";
 
 "Auto uses an API key when configured, otherwise browser cookies." = "Auto uses an API key when configured, otherwise browser cookies.";
@@ -2625,3 +2627,7 @@
 "Daily spend · %@" = "日別の支出 · %@";
 "Applies to the selected token account “%@”. Each account keeps its own limits." = "選択中のトークンアカウント「%@」に適用されます。各アカウントは独自の上限を保持します。";
 "Applies to the OpenAI API key, not to token accounts." = "OpenAI APIキーに適用されます。トークンアカウントには適用されません。";
+/* Claude Platform provider */
+"API credit" = "API クレジット";
+"Purchased credit" = "購入済みクレジット";
+"Claude Platform exposes Console credit balance and monthly spend, not local token cost history." = "Claude Platform は、ローカルのトークンコスト履歴ではなく、Console のクレジット残高と月間支出を表示します。";

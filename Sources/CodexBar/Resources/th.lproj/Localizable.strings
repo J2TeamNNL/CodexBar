@@ -722,6 +722,12 @@
 "link_website" = "เว็บไซต์";
 "link_twitter" = "ทวิตเตอร์";
 "link_email" = "อีเมล";
+"link_acknowledgements" = "กิตติกรรมประกาศ";
+"acknowledgements_footer" = "CodexBar สร้างขึ้นด้วยโปรเจกต์โอเพนซอร์สเหล่านี้";
+"acknowledgements_others" = "อีก %d ราย";
+"acknowledgements_author" = "ผู้เขียน";
+"acknowledgements_authors" = "ผู้เขียน";
+"acknowledgements_license" = "สัญญาอนุญาต";
 "check_updates_auto" = "ตรวจสอบการอัปเดตโดยอัตโนมัติ";
 "update_channel" = "อัปเดตช่อง";
 "check_for_updates" = "ตรวจสอบการอัปเดต...";
@@ -2411,6 +2417,7 @@
 
 "X API cost history is not available." = "ไม่สามารถดูประวัติค่าใช้จ่ายของ X API ได้";
 "Paste a console.x.com Cookie header containing auth_token and ct0." = "วางส่วนหัว Cookie จาก console.x.com ที่มี auth_token และ ct0";
+"Paste a platform.claude.com Cookie header containing sessionKey." = "วางส่วนหัว Cookie จาก platform.claude.com ที่มี sessionKey";
 "Open X Developer Console" = "เปิดคอนโซลนักพัฒนา X";
 "update_available_notification_body" = "คลิกเพื่อเปิดการตั้งค่าการอัปเดตและติดตั้งเวอร์ชันใหม่";
 // Structured session performance layout.
@@ -2437,12 +2444,12 @@
 "merged_icon_source_title" = "แหล่งที่มาของไอคอนรวม";
 "merged_icon_source_subtitle" = "เลือกผู้ให้บริการที่จะแสดงบนไอคอนรวมเมื่อยุบ";
 "merged_icon_source_current_selection" = "ตัวเลือกปัจจุบัน";
-"merged_icon_source_highest_usage" = "อัตโนมัติ: การใช้งานล่าสุดและความเสี่ยงที่โควตาจะหมด";
+"merged_icon_source_highest_usage" = "การใช้งานสูงสุด";
 "merged_icon_source_frontmost_app" = "แอปผู้ให้บริการที่อยู่ด้านหน้า";
 /* Provider menu bar color */
 "Color by provider" = "สีตามผู้ให้บริการ";
 
-"show_most_used_provider_subtitle" = "โหมดอัตโนมัติติดตามการใช้ล่าสุด แล้วเลือกโควตาที่มีแนวโน้มจะหมดก่อน";
+"show_most_used_provider_subtitle" = "แถบเมนูจะแสดงผู้ให้บริการที่ใกล้เคียงกับขีดจํากัดอัตรามากที่สุดโดยอัตโนมัติ";
 
 "show_most_used_provider_title" = "แสดงผู้ให้บริการที่ใช้บ่อยที่สุด";
 
@@ -2535,11 +2542,6 @@
 "Only enabled providers" = "เฉพาะผู้ให้บริการที่เปิดใช้";
 "Restore default order" = "คืนค่าลำดับเริ่มต้น";
 "Also restores the provider order in the menu bar. Can be undone." = "คืนค่าลำดับผู้ให้บริการในแถบเมนูด้วย สามารถเลิกทำได้";
-"Auto: %@ is exhausted." = "อัตโนมัติ: %@ หมดแล้ว";
-"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "อัตโนมัติ: %@ อาจหมดก่อนในอีกประมาณ %ld นาทีตามการใช้งานล่าสุด (ค่าประมาณ)";
-"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "อัตโนมัติ: %@ อาจหมดก่อนในอีกประมาณ %ld นาทีตามอัตราปัจจุบัน (ค่าประมาณ)";
-"Auto: %@ has the least quota remaining (%ld%% used)." = "อัตโนมัติ: %@ มีโควตาเหลือน้อยที่สุด (ใช้ไป %ld%%)";
-"Recent usage detected." = "ตรวจพบการใช้งานล่าสุด";
 "Local Codex details; excluded from combined totals." = "รายละเอียด Codex ในเครื่อง ไม่รวมอยู่ในยอดรวม";
 
 "Auto uses an API key when configured, otherwise browser cookies." = "Auto uses an API key when configured, otherwise browser cookies.";
@@ -2627,3 +2629,7 @@
 "Daily spend · %@" = "ค่าใช้จ่ายรายวัน · %@";
 "Applies to the selected token account “%@”. Each account keeps its own limits." = "ใช้กับบัญชีโทเคนที่เลือก “%@” แต่ละบัญชีจะเก็บขีดจำกัดของตนเองไว้";
 "Applies to the OpenAI API key, not to token accounts." = "ใช้กับคีย์ API ของ OpenAI ไม่ใช่บัญชีโทเคน";
+/* Claude Platform provider */
+"API credit" = "เครดิต API";
+"Purchased credit" = "เครดิตที่ซื้อ";
+"Claude Platform exposes Console credit balance and monthly spend, not local token cost history." = "Claude Platform แสดงยอดเครดิตและการใช้จ่ายรายเดือนของ Console ไม่ใช่ประวัติต้นทุนโทเค็นในเครื่อง";

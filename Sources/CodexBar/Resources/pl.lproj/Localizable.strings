@@ -724,6 +724,12 @@
 "link_website" = "Strona internetowa";
 "link_twitter" = "Twitter";
 "link_email" = "E-mail";
+"link_acknowledgements" = "Podziękowania";
+"acknowledgements_footer" = "CodexBar korzysta z tych projektów open source.";
+"acknowledgements_others" = "%d innych";
+"acknowledgements_author" = "Autor";
+"acknowledgements_authors" = "Autorzy";
+"acknowledgements_license" = "Licencja";
 "check_updates_auto" = "Sprawdzaj aktualizacje automatycznie";
 "update_channel" = "Kanał aktualizacji";
 "check_for_updates" = "Sprawdź aktualizacje…";
@@ -2410,6 +2416,7 @@
 
 "X API cost history is not available." = "Historia kosztów X API jest niedostępna.";
 "Paste a console.x.com Cookie header containing auth_token and ct0." = "Wklej nagłówek Cookie z console.x.com zawierający auth_token i ct0.";
+"Paste a platform.claude.com Cookie header containing sessionKey." = "Wklej nagłówek Cookie z platform.claude.com zawierający sessionKey.";
 "Open X Developer Console" = "Otwórz konsolę deweloperską X";
 "update_available_notification_body" = "Kliknij, aby otworzyć ustawienia aktualizacji i zainstalować nową wersję.";
 // Structured session performance layout.
@@ -2436,12 +2443,12 @@
 "merged_icon_source_title" = "Źródło połączonej ikony";
 "merged_icon_source_subtitle" = "Wybierz dostawcę wyświetlanego przez zwiniętą połączoną ikonę.";
 "merged_icon_source_current_selection" = "Bieżący wybór";
-"merged_icon_source_highest_usage" = "Auto: ostatnie użycie i ryzyko wyczerpania limitu";
+"merged_icon_source_highest_usage" = "Najwyższe użycie";
 "merged_icon_source_frontmost_app" = "Aplikacja dostawcy na pierwszym planie";
 /* Provider menu bar color */
 "Color by provider" = "Kolor według dostawcy";
 
-"show_most_used_provider_subtitle" = "Auto kieruje się ostatnim zużyciem, a następnie limitem, który może wyczerpać się jako pierwszy.";
+"show_most_used_provider_subtitle" = "Pasek menu automatycznie pokazuje dostawcę najbliżej limitu.";
 
 "show_most_used_provider_title" = "Pokaż najczęściej używanego dostawcę";
 
@@ -2534,11 +2541,6 @@
 "Only enabled providers" = "Tylko aktywni dostawcy";
 "Restore default order" = "Przywróć domyślną kolejność";
 "Also restores the provider order in the menu bar. Can be undone." = "Przywraca również kolejność dostawców na pasku menu. Można cofnąć.";
-"Auto: %@ is exhausted." = "Auto: limit %@ został wyczerpany.";
-"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "Auto: limit %@ może wyczerpać się jako pierwszy, za około %ld min przy ostatnim zużyciu (szacunek).";
-"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "Auto: limit %@ może wyczerpać się jako pierwszy, za około %ld min przy obecnym tempie (szacunek).";
-"Auto: %@ has the least quota remaining (%ld%% used)." = "Auto: %@ ma najmniejszy pozostały limit (wykorzystano %ld%%).";
-"Recent usage detected." = "Wykryto niedawne użycie.";
 "Local Codex details; excluded from combined totals." = "Lokalne szczegóły Codex; wyłączone z łącznych sum.";
 
 "Auto uses an API key when configured, otherwise browser cookies." = "Auto uses an API key when configured, otherwise browser cookies.";
@@ -2628,3 +2630,7 @@
 "Daily spend · %@" = "Dzienne wydatki · %@";
 "Applies to the selected token account “%@”. Each account keeps its own limits." = "Dotyczy wybranego konta tokena „%@”. Każde konto zachowuje własne limity.";
 "Applies to the OpenAI API key, not to token accounts." = "Dotyczy klucza API OpenAI, a nie kont tokenów.";
+/* Claude Platform provider */
+"API credit" = "Kredyt API";
+"Purchased credit" = "Kupiony kredyt";
+"Claude Platform exposes Console credit balance and monthly spend, not local token cost history." = "Claude Platform pokazuje saldo kredytów i miesięczne wydatki w Console, a nie lokalną historię kosztów tokenów.";

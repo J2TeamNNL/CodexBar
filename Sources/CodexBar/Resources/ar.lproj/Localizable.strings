@@ -722,6 +722,12 @@
 "link_website" = "الموقع الإلكتروني";
 "link_twitter" = "تويتر";
 "link_email" = "البريد الإلكتروني";
+"link_acknowledgements" = "شكر وتقدير";
+"acknowledgements_footer" = "تم بناء CodexBar باستخدام هذه المشاريع مفتوحة المصدر.";
+"acknowledgements_others" = "%d آخرين";
+"acknowledgements_author" = "المؤلف";
+"acknowledgements_authors" = "المؤلفون";
+"acknowledgements_license" = "الترخيص";
 "check_updates_auto" = "تحقق تلقائيا من التحديثات";
 "update_channel" = "قناة التحديث";
 "check_for_updates" = "تحقق من التحديثات...";
@@ -2411,6 +2417,7 @@
 
 "X API cost history is not available." = "سجل تكاليف X API غير متاح.";
 "Paste a console.x.com Cookie header containing auth_token and ct0." = "الصق ترويسة Cookie من console.x.com تحتوي على auth_token وct0.";
+"Paste a platform.claude.com Cookie header containing sessionKey." = "الصق ترويسة Cookie من platform.claude.com تحتوي على sessionKey.";
 "Open X Developer Console" = "افتح وحدة تحكم مطوري X";
 "update_available_notification_body" = "انقر لفتح إعدادات التحديث وتثبيت الإصدار الجديد.";
 // Structured session performance layout.
@@ -2437,12 +2444,12 @@
 "merged_icon_source_title" = "مصدر الأيقونة المدمجة";
 "merged_icon_source_subtitle" = "اختر المزوّد الذي تعرضه الأيقونة المدمجة عند طيّها.";
 "merged_icon_source_current_selection" = "التحديد الحالي";
-"merged_icon_source_highest_usage" = "تلقائي: الاستخدام الأخير وخطر نفاد الحصة";
+"merged_icon_source_highest_usage" = "أعلى استخدام";
 "merged_icon_source_frontmost_app" = "تطبيق المزوّد في المقدمة";
 /* Provider menu bar color */
 "Color by provider" = "تلوين حسب المزوّد";
 
-"show_most_used_provider_subtitle" = "يتبع الوضع التلقائي الاستهلاك الأخير، ثم الحصة الأكثر عرضة للنفاد.";
+"show_most_used_provider_subtitle" = "شريط القوائم يعرض تلقائيا مزود الخدمة الأقرب إلى حد السعر.";
 
 "show_most_used_provider_title" = "عرض المزود الأكثر استخداما";
 
@@ -2535,11 +2542,6 @@
 "Only enabled providers" = "المزوّدون المفعّلون فقط";
 "Restore default order" = "استعادة الترتيب الافتراضي";
 "Also restores the provider order in the menu bar. Can be undone." = "يستعيد أيضاً ترتيب المزوّدين في شريط القوائم. يمكن التراجع عن هذا الإجراء.";
-"Auto: %@ is exhausted." = "تلقائي: نفدت حصة %@.";
-"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "تلقائي: قد تنفد حصة %@ أولًا، خلال نحو %ld دقيقة بحسب الاستخدام الأخير (تقديري).";
-"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "تلقائي: قد تنفد حصة %@ أولًا، خلال نحو %ld دقيقة بالوتيرة الحالية (تقديري).";
-"Auto: %@ has the least quota remaining (%ld%% used)." = "تلقائي: حصة %@ هي الأقل المتبقية (استهلاك %ld%%).";
-"Recent usage detected." = "تم رصد استخدام حديث.";
 "Local Codex details; excluded from combined totals." = "تفاصيل Codex المحلية؛ مستبعدة من الإجماليات المجمّعة.";
 
 "Auto uses an API key when configured, otherwise browser cookies." = "Auto uses an API key when configured, otherwise browser cookies.";
@@ -2629,3 +2631,7 @@
 "Daily spend · %@" = "الإنفاق اليومي · %@";
 "Applies to the selected token account “%@”. Each account keeps its own limits." = "تنطبق على حساب الرمز المحدد «%@». يحتفظ كل حساب بحدوده الخاصة.";
 "Applies to the OpenAI API key, not to token accounts." = "تنطبق على مفتاح OpenAI API، وليس على حسابات الرموز.";
+/* Claude Platform provider */
+"API credit" = "رصيد API";
+"Purchased credit" = "رصيد مشترى";
+"Claude Platform exposes Console credit balance and monthly spend, not local token cost history." = "يعرض Claude Platform رصيد الائتمان في Console والإنفاق الشهري، وليس سجل تكلفة الرموز المحلي.";

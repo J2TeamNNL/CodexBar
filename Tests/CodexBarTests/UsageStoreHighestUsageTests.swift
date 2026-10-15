@@ -85,7 +85,7 @@ struct UsageStoreHighestUsageTests {
     }
 
     @Test(arguments: [false, true])
-    func `automatic metric ranks the most constrained kimi quota`(monthlyExhausted: Bool) {
+    func `automatic metric uses rate limit unless kimi membership is exhausted`(monthlyExhausted: Bool) {
         let settings = testSettingsStore(
             suiteName: "UsageStoreHighestUsageTests-kimi-automatic",
             userDefaults: InMemoryUserDefaults())
@@ -135,8 +135,8 @@ struct UsageStoreHighestUsageTests {
         store._setSnapshotForTesting(kimiSnapshot, provider: .kimi)
 
         let highest = store.providerWithHighestUsage()
-        #expect(highest?.provider == .kimi)
-        #expect(highest?.usedPercent == (monthlyExhausted ? 100 : 90))
+        #expect(highest?.provider == (monthlyExhausted ? .kimi : .codex))
+        #expect(highest?.usedPercent == (monthlyExhausted ? 100 : 70))
     }
 
     @Test
@@ -184,7 +184,7 @@ struct UsageStoreHighestUsageTests {
     }
 
     @Test
-    func `automatic metric ranks antigravity tertiary consistently with its displayed quota`() {
+    func `automatic metric ignores antigravity tertiary when compact icon has no quota summary`() {
         let settings = SettingsStore(
             configStore: testConfigStore(suiteName: "UsageStoreHighestUsageTests-antigravity-tertiary"),
             zaiTokenStore: NoopZaiTokenStore(),
@@ -218,12 +218,12 @@ struct UsageStoreHighestUsageTests {
         store._setSnapshotForTesting(antigravitySnapshot, provider: .antigravity)
 
         let highest = store.providerWithHighestUsage()
-        #expect(highest?.provider == .antigravity)
-        #expect(highest?.usedPercent == 85)
+        #expect(highest?.provider == .codex)
+        #expect(highest?.usedPercent == 70)
     }
 
     @Test
-    func `automatic metric ranks unclassified antigravity compact fallback consistently`()
+    func `automatic metric ignores unclassified antigravity compact fallback until exhausted priority is enabled`()
         throws
     {
         let settings = SettingsStore(
@@ -268,8 +268,8 @@ struct UsageStoreHighestUsageTests {
         store._setSnapshotForTesting(antigravitySnapshot, provider: .antigravity)
 
         let highest = store.providerWithHighestUsage()
-        #expect(highest?.provider == .antigravity)
-        #expect(highest?.usedPercent == 64)
+        #expect(highest?.provider == .codex)
+        #expect(highest?.usedPercent == 50)
 
         settings.antigravityPrioritizeExhaustedQuotas = true
         let optInHighest = store.providerWithHighestUsage()
@@ -319,7 +319,7 @@ struct UsageStoreHighestUsageTests {
 
 extension UsageStoreHighestUsageTests {
     @Test
-    func `recent consumption prioritizes usable antigravity until exhausted priority is enabled`() {
+    func `antigravity automatic ranking keeps usable first until exhausted priority is enabled`() {
         let settings = SettingsStore(
             configStore: testConfigStore(suiteName: "UsageStoreHighestUsageTests-antigravity-all-summary"),
             zaiTokenStore: NoopZaiTokenStore(),
@@ -386,8 +386,8 @@ extension UsageStoreHighestUsageTests {
                 otherWeeklyUsed: 50),
             provider: .antigravity)
         highest = store.providerWithHighestUsage()
-        #expect(highest?.provider == .antigravity)
-        #expect(highest?.usedPercent == 50)
+        #expect(highest?.provider == .codex)
+        #expect(highest?.usedPercent == 80)
 
         settings.antigravityPrioritizeExhaustedQuotas = true
         highest = store.providerWithHighestUsage()

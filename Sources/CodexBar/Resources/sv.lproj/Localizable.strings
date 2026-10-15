@@ -715,6 +715,12 @@
 "link_website" = "Webbplats";
 "link_twitter" = "Twitter";
 "link_email" = "E-post";
+"link_acknowledgements" = "Tack";
+"acknowledgements_footer" = "CodexBar är byggt med dessa projekt med öppen källkod.";
+"acknowledgements_others" = "%d andra";
+"acknowledgements_author" = "Upphovsperson";
+"acknowledgements_authors" = "Upphovspersoner";
+"acknowledgements_license" = "Licens";
 "check_updates_auto" = "Sök efter uppdateringar automatiskt";
 "update_channel" = "Uppdateringskanal";
 "check_for_updates" = "Sök efter uppdateringar…";
@@ -2406,6 +2412,7 @@
 
 "X API cost history is not available." = "Kostnadshistorik för X API är inte tillgänglig.";
 "Paste a console.x.com Cookie header containing auth_token and ct0." = "Klistra in en Cookie-header från console.x.com som innehåller auth_token och ct0.";
+"Paste a platform.claude.com Cookie header containing sessionKey." = "Klistra in en Cookie-header från platform.claude.com som innehåller sessionKey.";
 "Open X Developer Console" = "Öppna X utvecklarkonsol";
 "update_available_notification_body" = "Klicka för att öppna uppdateringsinställningarna och installera den nya versionen.";
 // Structured session performance layout.
@@ -2432,12 +2439,12 @@
 "merged_icon_source_title" = "Källa för kombinerad ikon";
 "merged_icon_source_subtitle" = "Välj vilken leverantör den hopfällda kombinerade ikonen visar.";
 "merged_icon_source_current_selection" = "Aktuellt val";
-"merged_icon_source_highest_usage" = "Auto: senaste användning och risk för förbrukad kvot";
+"merged_icon_source_highest_usage" = "Högsta användning";
 "merged_icon_source_frontmost_app" = "Leverantörsapp i förgrunden";
 /* Provider menu bar color */
 "Color by provider" = "Färg per leverantör";
 
-"show_most_used_provider_subtitle" = "Auto följer den senaste förbrukningen och sedan kvoten som troligast tar slut först.";
+"show_most_used_provider_subtitle" = "Menyraden visar automatiskt leverantören som ligger närmast sin gräns.";
 
 "show_most_used_provider_title" = "Visa mest använda leverantör";
 
@@ -2530,11 +2537,6 @@
 "Only enabled providers" = "Endast aktiverade leverantörer";
 "Restore default order" = "Återställ standardordning";
 "Also restores the provider order in the menu bar. Can be undone." = "Återställer även leverantörsordningen i menyraden. Kan ångras.";
-"Auto: %@ is exhausted." = "Auto: %@ är förbrukad.";
-"Auto: %@ may run out first, in about %ld min at recent usage (estimated)." = "Auto: %@ kan ta slut först, om cirka %ld min vid senaste användningen (uppskattning).";
-"Auto: %@ may run out first, in about %ld min at current pace (estimated)." = "Auto: %@ kan ta slut först, om cirka %ld min i nuvarande takt (uppskattning).";
-"Auto: %@ has the least quota remaining (%ld%% used)." = "Auto: %@ har minst kvot kvar (%ld%% använt).";
-"Recent usage detected." = "Nylig användning upptäckt.";
 "Local Codex details; excluded from combined totals." = "Lokala Codex-detaljer; ingår inte i de sammanlagda totalerna.";
 
 "Auto uses an API key when configured, otherwise browser cookies." = "Auto uses an API key when configured, otherwise browser cookies.";
@@ -2624,3 +2626,7 @@
 "Daily spend · %@" = "Dagliga utgifter · %@";
 "Applies to the selected token account “%@”. Each account keeps its own limits." = "Gäller det valda tokenkontot ”%@”. Varje konto behåller sina egna gränser.";
 "Applies to the OpenAI API key, not to token accounts." = "Gäller OpenAI API-nyckeln, inte tokenkonton.";
+/* Claude Platform provider */
+"API credit" = "API-kredit";
+"Purchased credit" = "Köpt kredit";
+"Claude Platform exposes Console credit balance and monthly spend, not local token cost history." = "Claude Platform visar Console-kreditsaldo och månadsutgifter, inte lokal tokenkostnadshistorik.";

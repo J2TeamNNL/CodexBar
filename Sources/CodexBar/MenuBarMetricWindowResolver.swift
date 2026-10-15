@@ -12,17 +12,6 @@ enum MenuBarMetricWindowResolver {
         -> RateWindow?
     {
         guard let snapshot else { return nil }
-        if preference == .automatic {
-            return AutomaticQuotaSelection.select(
-                windows: Self.automaticCandidates(
-                    provider: provider,
-                    snapshot: snapshot,
-                    prioritizesExhaustedQuotas: antigravityPrioritizeExhaustedQuotas,
-                    now: now),
-                now: now,
-                forecast: { AutomaticQuotaSelection.paceForecast(
-                    provider: provider, snapshot: snapshot, window: $0, now: now) })?.window
-        }
         let presentation = ProviderDescriptorRegistry.descriptor(for: provider).presentation
         let metric = preference.providerMetric
         switch presentation.menuBarWindow(context: ProviderMenuBarWindowContext(
@@ -34,6 +23,9 @@ enum MenuBarMetricWindowResolver {
         {
         case let .resolved(window):
             return window
+        case let .automaticCandidates(windows):
+            return AutomaticQuotaSelection.select(
+                windows: windows, provider: provider, now: now, dataConfidence: snapshot.dataConfidence)?.window
         case .unhandled:
             break
         }
@@ -54,7 +46,11 @@ enum MenuBarMetricWindowResolver {
         case .average:
             return Self.averageWindow(snapshot: snapshot, supportsAverage: supportsAverage)
         case .automatic:
-            return nil // Resolved before explicit provider metric preferences.
+            return AutomaticQuotaSelection.select(
+                windows: [snapshot.primary, snapshot.secondary, snapshot.tertiary].compactMap(\.self),
+                provider: provider,
+                now: now,
+                dataConfidence: snapshot.dataConfidence)?.window
         }
     }
 

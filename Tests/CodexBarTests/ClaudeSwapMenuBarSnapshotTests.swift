@@ -64,45 +64,6 @@ struct ClaudeSwapMenuBarSnapshotTests {
     }
 
     @Test
-    func `active swap readings establish scoped recent consumption`() throws {
-        let store = Self.makeUsageStore(suite: "ClaudeSwapMenuBarSnapshotTests-recent-usage")
-        let firstAt = Self.now
-        let secondAt = firstAt.addingTimeInterval(120)
-        store.claudeSwapAccountSnapshots = Self.swapAccounts(
-            count: 2, activeNumber: 1, activeFiveHourPercent: 25, now: firstAt)
-        let firstScope = store.automaticQuotaAccountScope(for: UsageProvider.claude.instanceID)
-
-        store.claudeSwapAccountSnapshots = Self.swapAccounts(
-            count: 2, activeNumber: 1, activeFiveHourPercent: 35, now: secondAt)
-        let snapshot = try #require(store.menuBarSnapshot(for: UsageProvider.claude.instanceID))
-        let scope = store.automaticQuotaAccountScope(for: UsageProvider.claude.instanceID)
-        #expect(scope == firstScope)
-        #expect(store.recentQuotaConsumption.lastConsumedAt(
-            provider: UsageProvider.claude.instanceID,
-            snapshot: snapshot,
-            now: secondAt,
-            accountScope: scope) == secondAt)
-        #expect(try store.recentQuotaConsumption.etaSeconds(
-            provider: UsageProvider.claude.instanceID,
-            snapshot: snapshot,
-            window: #require(snapshot.primary),
-            now: secondAt,
-            accountScope: scope) == 780)
-
-        let switchedAt = secondAt.addingTimeInterval(120)
-        store.claudeSwapAccountSnapshots = Self.swapAccounts(
-            count: 2, activeNumber: 2, activeFiveHourPercent: 60, now: switchedAt)
-        let switchedSnapshot = try #require(store.menuBarSnapshot(for: UsageProvider.claude.instanceID))
-        let switchedScope = store.automaticQuotaAccountScope(for: UsageProvider.claude.instanceID)
-        #expect(switchedScope != scope)
-        #expect(store.recentQuotaConsumption.lastConsumedAt(
-            provider: UsageProvider.claude.instanceID,
-            snapshot: switchedSnapshot,
-            now: switchedAt,
-            accountScope: switchedScope) == nil)
-    }
-
-    @Test
     func `active account without usable usage falls back to the ambient snapshot`() throws {
         let store = Self.makeUsageStore(suite: "ClaudeSwapMenuBarSnapshotTests-fallback")
         var rows = Self.swapRows(count: 2, activeNumber: 1)
@@ -182,27 +143,15 @@ struct ClaudeSwapMenuBarSnapshotTests {
 
     private static let now = Date(timeIntervalSince1970: 1_782_000_000)
 
-    private static func swapAccounts(
-        count: Int,
-        activeNumber: Int,
-        activeFiveHourPercent: Double? = nil,
-        now: Date = Self.now) -> [ProviderAccountUsageSnapshot]
-    {
+    private static func swapAccounts(count: Int, activeNumber: Int) -> [ProviderAccountUsageSnapshot] {
         ClaudeSwapAccountProjection.accountSnapshots(
             from: ClaudeSwapAccountList(
                 activeAccountNumber: activeNumber,
-                accounts: self.swapRows(
-                    count: count,
-                    activeNumber: activeNumber,
-                    activeFiveHourPercent: activeFiveHourPercent)),
-            now: now)
+                accounts: self.swapRows(count: count, activeNumber: activeNumber)),
+            now: self.now)
     }
 
-    private static func swapRows(
-        count: Int,
-        activeNumber: Int,
-        activeFiveHourPercent: Double? = nil) -> [ClaudeSwapAccountRow]
-    {
+    private static func swapRows(count: Int, activeNumber: Int) -> [ClaudeSwapAccountRow] {
         (1...count).map { number in
             ClaudeSwapAccountRow(
                 number: number,
@@ -210,7 +159,7 @@ struct ClaudeSwapMenuBarSnapshotTests {
                 isActive: number == activeNumber,
                 usageStatus: .ok,
                 fiveHour: ClaudeSwapUsageWindow(
-                    usedPercent: activeFiveHourPercent ?? Double(24 + number),
+                    usedPercent: Double(24 + number),
                     resetsAt: self.now.addingTimeInterval(3600)),
                 sevenDay: ClaudeSwapUsageWindow(
                     usedPercent: Double(59 + number),

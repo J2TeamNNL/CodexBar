@@ -280,7 +280,7 @@ struct MenuBarMetricWindowResolverTests {
     }
 
     @Test
-    func `automatic metric chooses highest default usage when no window is exhausted`() {
+    func `automatic metric chooses highest usage without a forecast`() {
         let snapshot = UsageSnapshot(
             primary: RateWindow(usedPercent: 42, windowMinutes: 300, resetsAt: nil, resetDescription: "Primary"),
             secondary: RateWindow(usedPercent: 99, windowMinutes: 10080, resetsAt: nil, resetDescription: "Secondary"),

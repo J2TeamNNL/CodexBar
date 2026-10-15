@@ -443,9 +443,7 @@ extension UsageStore {
         {
             let session = projection.menuBarSelectableRateWindow(for: .session)
             let weekly = projection.menuBarSelectableRateWindow(for: .weekly)
-            let automatic = snapshot.flatMap {
-                self.automaticQuotaSelection(provider: provider, snapshot: $0, now: now)?.window
-            }
+            let automatic = projection.automaticMenuBarWindow()
             return MenuBarLayoutWindows(
                 primary: session,
                 secondary: weekly,
@@ -462,15 +460,13 @@ extension UsageStore {
         let automaticPreference = provider == .mistral
             ? self.settings.menuBarMetricPreference(for: provider, snapshot: snapshot)
             : .automatic
-        let automatic = automaticPreference == .automatic
-            ? snapshot.flatMap { self.automaticQuotaSelection(provider: provider, snapshot: $0, now: now)?.window }
-            : MenuBarMetricWindowResolver.rateWindow(
-                preference: automaticPreference,
-                provider: provider,
-                snapshot: snapshot,
-                supportsAverage: self.settings.menuBarMetricSupportsAverage(for: provider),
-                antigravityPrioritizeExhaustedQuotas: self.settings.antigravityPrioritizeExhaustedQuotas,
-                now: now)
+        let automatic = MenuBarMetricWindowResolver.rateWindow(
+            preference: automaticPreference,
+            provider: provider,
+            snapshot: snapshot,
+            supportsAverage: self.settings.menuBarMetricSupportsAverage(for: provider),
+            antigravityPrioritizeExhaustedQuotas: self.settings.antigravityPrioritizeExhaustedQuotas,
+            now: now)
         return MenuBarLayoutWindows(
             primary: snapshot?.primary,
             secondary: snapshot?.secondary,

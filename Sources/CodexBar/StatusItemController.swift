@@ -348,6 +348,24 @@ final class StatusItemController: NSObject, NSMenuDelegate, StatusItemControllin
         case waitingBrowser
     }
 
+    func menuBarMetricWindow(for provider: UsageProvider, snapshot: UsageSnapshot?, now: Date = Date()) -> RateWindow? {
+        if provider == .codex {
+            return self.codexMenuBarMetricWindow(snapshot: snapshot, now: now)
+        }
+        return MenuBarMetricWindowResolver.rateWindow(
+            preference: self.settings.menuBarMetricPreference(for: provider, snapshot: snapshot),
+            provider: provider,
+            snapshot: snapshot,
+            supportsAverage: self.settings.menuBarMetricSupportsAverage(for: provider),
+            antigravityPrioritizeExhaustedQuotas: self.settings.antigravityPrioritizeExhaustedQuotas,
+            now: now)
+    }
+
+    private func codexMenuBarMetricWindow(snapshot: UsageSnapshot?, now: Date) -> RateWindow? {
+        guard let snapshot else { return nil }
+        return self.store.codexMenuBarMetricWindow(snapshot: snapshot, now: now)
+    }
+
     init(
         store: UsageStore,
         settings: SettingsStore,

@@ -9,7 +9,7 @@
 
 ### Changed
 
-- Menu bar: Auto prioritizes quotas projected to run out first, then highest usage, and applies the same rule to the unified highest-usage icon without tracking recent consumption (#4491). Thanks @J2TeamNNL!
+- Menu bar: Auto prioritizes eligible quotas projected to run out first, then highest usage, and applies the same rule to the unified highest-usage icon while preserving Gemini tier order and ordered credit pools (#4491). Thanks @J2TeamNNL!
 - CLI: fetch usage from up to three providers concurrently while preserving output order, isolated failures, and refreshed credentials (#4501). Thanks @djbclark!
 
 ### Fixed

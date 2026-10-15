@@ -65,7 +65,7 @@ struct GeminiMenuBarWindowTests {
     }
 
     @Test
-    func `gemini automatic prefers higher usage while explicit metrics keep Pro fallback`() throws {
+    func `gemini metrics keep Pro over Flash Lite when Flash is unavailable`() throws {
         let snapshot = try GeminiStatusProbe.parse(text: """
         gemini-2.5-pro                               3       70.0% (Resets in 24h)
         gemini-2.5-flash-lite                       12       60.0% (Resets in 6h)
@@ -78,9 +78,24 @@ struct GeminiMenuBarWindowTests {
                 snapshot: snapshot,
                 supportsAverage: true)
 
-            #expect(
-                window?.usedPercent == (preference == .automatic ? 40 : 30),
-                "Failed preference: \(preference)")
+            #expect(window?.usedPercent == 30, "Failed preference: \(preference)")
         }
+    }
+
+    @Test
+    func `gemini automatic still surfaces an exhausted model tier`() throws {
+        let snapshot = try GeminiStatusProbe.parse(text: """
+        gemini-2.5-pro                               3       70.0% (Resets in 24h)
+        gemini-2.5-flash-lite                       12        0.0% (Resets in 6h)
+        """).toUsageSnapshot()
+
+        let window = MenuBarMetricWindowResolver.rateWindow(
+            preference: .automatic,
+            provider: .gemini,
+            snapshot: snapshot,
+            supportsAverage: true)
+
+        #expect(window == snapshot.tertiary)
+        #expect(window?.usedPercent == 100)
     }
 }

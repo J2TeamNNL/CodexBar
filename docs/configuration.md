@@ -354,7 +354,7 @@ unless explicitly exported and imported. Import does not modify `config.json` or
 ### Menu bar controls
 
 **Auto** ranks each provider's eligible quota windows from the current snapshot. An exhausted quota comes
-first; otherwise a valid pace forecast that runs out before reset takes priority, with the shortest time to
+first; otherwise a supported lane’s pace forecast that runs out before reset takes priority, with the shortest time to
 depletion first. Without such a forecast, Auto chooses the highest used percentage. Ties keep provider order.
 The unified highest-usage icon uses the same priority for providers set to Auto and displays the selected
 window's actual percentage. Explicit metric choices and provider-specific credit-pool ordering are preserved.

@@ -9,9 +9,11 @@ enum AutomaticQuotaSelection {
     }
 
     struct Selection {
-        let window: RateWindow
-        let eta: TimeInterval?
         let candidate: Candidate
+        let eta: TimeInterval?
+        var window: RateWindow {
+            self.candidate.window
+        }
     }
 
     static func select(
@@ -43,14 +45,8 @@ enum AutomaticQuotaSelection {
     }
 
     static func paceSlot(for window: RateWindow, in snapshot: UsageSnapshot) -> ProviderPaceSlot? {
-        let matchingSlots: [ProviderPaceSlot] = [
-            (snapshot.primary, ProviderPaceSlot.primary),
-            (snapshot.secondary, ProviderPaceSlot.secondary),
-            (snapshot.tertiary, ProviderPaceSlot.tertiary),
-        ].compactMap { sourceSlot in
-            sourceSlot.0 == window ? sourceSlot.1 : nil
-        }
-        return matchingSlots.count == 1 ? matchingSlots.first : nil
+        let matches = self.candidates(snapshot: snapshot).filter { $0.window == window }
+        return matches.count == 1 ? matches.first?.paceSlot : nil
     }
 
     static func selection(
@@ -73,7 +69,7 @@ enum AutomaticQuotaSelection {
         {
             eta = seconds
         }
-        return Selection(window: window, eta: eta, candidate: candidate)
+        return Selection(candidate: candidate, eta: eta)
     }
 
     static func precedes(_ lhs: Selection, _ rhs: Selection) -> Bool {

@@ -49,10 +49,10 @@ struct UsageStoreHighestUsageTests {
 
     @Test
     func `automatic highest usage ignores pace unsupported OpenCode lane`() {
-        let settings = SettingsStore(
-            configStore: testConfigStore(suiteName: "UsageStoreHighestUsageTests-opencode-lane-pace"),
-            zaiTokenStore: NoopZaiTokenStore(),
-            syntheticTokenStore: NoopSyntheticTokenStore())
+        let settings = testSettingsStore(
+            suiteName: "UsageStoreHighestUsageTests-opencode-lane-pace",
+            userDefaults: InMemoryUserDefaults(),
+            keychainAccessPolicy: .init(setDisabled: { _ in }, isExplicitlyDisabled: { true }))
         settings.refreshFrequency = .manual
         settings.statusChecksEnabled = false
         settings.setMenuBarMetricPreference(.automatic, for: .claude)
@@ -72,7 +72,7 @@ struct UsageStoreHighestUsageTests {
             browserDetection: BrowserDetection(
                 homeDirectory: "/synthetic-opencode-lane-pace",
                 cacheTTL: 0,
-                now: Date.init,
+                now: { now },
                 fileExists: { _ in false },
                 directoryContents: { _ in [] },
                 applicationURLs: { _ in [] },

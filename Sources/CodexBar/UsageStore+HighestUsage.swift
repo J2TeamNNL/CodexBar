@@ -16,24 +16,29 @@ extension UsageStore {
                   let snapshot = self.menuBarSnapshot(for: instanceID)
             else { continue }
             let automatic = self.settings.menuBarMetricPreference(for: provider, snapshot: snapshot) == .automatic
-            let candidate: AutomaticQuotaSelection.Candidate? = if provider == .codex, automatic {
+            // Provider-specific by design: Codex projection retains source pace slots after lane reclassification.
+            let selection: AutomaticQuotaSelection.Selection? = if provider == .codex, automatic {
                 self.codexConsumerProjection(
                     surface: .menuBar,
                     snapshotOverride: snapshot,
-                    now: now).automaticMenuBarSelection()?.candidate
+                    now: now).automaticMenuBarSelection()
             } else if let window = self.menuBarMetricWindowForHighestUsage(
                 provider: provider,
                 snapshot: snapshot,
                 now: now)
             {
-                AutomaticQuotaSelection.Candidate(
-                    window: window,
-                    paceSlot: automatic ? AutomaticQuotaSelection.paceSlot(for: window, in: snapshot) : nil)
+                AutomaticQuotaSelection.selection(
+                    candidate: .init(
+                        window: window,
+                        paceSlot: automatic ? AutomaticQuotaSelection.paceSlot(for: window, in: snapshot) : nil),
+                    provider: provider,
+                    now: now,
+                    dataConfidence: snapshot.dataConfidence)
             } else {
                 nil
             }
-            guard let candidate else { continue }
-            let window = candidate.window
+            guard let selection else { continue }
+            let window = selection.window
             let percent = window.usedPercent
             guard !self.shouldExcludeFromHighestUsage(
                 provider: provider,
@@ -43,15 +48,9 @@ extension UsageStore {
             else {
                 continue
             }
-            guard let selection = AutomaticQuotaSelection.selection(
-                candidate: candidate,
-                provider: provider,
-                now: now,
-                dataConfidence: snapshot.dataConfidence)
-            else { continue }
             let priority = automatic
                 ? selection
-                : AutomaticQuotaSelection.Selection(window: window, eta: nil, candidate: candidate)
+                : AutomaticQuotaSelection.Selection(candidate: selection.candidate, eta: nil)
             if highest.map({ AutomaticQuotaSelection.precedes($0.selection, priority) }) ?? true {
                 highest = (provider, priority)
             }

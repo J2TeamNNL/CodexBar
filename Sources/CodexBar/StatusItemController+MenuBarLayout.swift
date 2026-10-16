@@ -190,7 +190,8 @@ extension StatusItemController {
             verticalAdjustment: self.settings.menuBarLayoutVerticalAdjustment,
             colorPace: self.settings.menuBarColorPace,
             colorByProvider: self.settings.menuBarColorByProvider,
-            forceStackedStyle: forceStackedStyle)
+            forceStackedStyle: forceStackedStyle,
+            monospacedDigits: self.settings.menuBarLayoutMonospacedDigits)
     }
 
     func menuBarLayoutRenderData(
@@ -285,7 +286,7 @@ extension StatusItemController {
         for button: NSButton,
         gap: MenuBarLayoutGap) -> CGFloat
     {
-        // Ordinary single-line text uses a cached template. Rich content retains native title rendering.
+        // Eligible monochrome content uses a template; rich content retains native title rendering.
         let title = rendered.statusImage == nil ? rendered.attributedTitle : NSAttributedString()
         if !button.attributedTitle.isEqual(to: title) {
             button.attributedTitle = title

@@ -1133,17 +1133,12 @@
 "CodexBar found another managed account that already uses the current system account. Resolve the duplicate account before switching." = "CodexBar 发现另一个托管账号已使用当前的系统账号。请先解决重复账号，再进行切换。";
 "CodexBar will ask macOS Keychain for “%@” so it can decrypt browser cookies and authenticate your account. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求“%@”，以解密浏览器 Cookie 并认证你的账号。点击“确定”继续。";
 "CodexBar will ask macOS Keychain for the Claude Code OAuth token so it can fetch your Claude usage. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求 Claude Code OAuth token，以获取你的 Claude 用量。点击“确定”继续。";
-"CodexBar will ask macOS Keychain for your Amp cookie header so it can fetch usage. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求你的 Amp Cookie 标头，以获取用量。点击“确定”继续。";
-"CodexBar will ask macOS Keychain for your Augment cookie header so it can fetch usage. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求你的 Augment Cookie 标头，以获取用量。点击“确定”继续。";
+"CodexBar will ask macOS Keychain for your %@ cookie header so it can fetch usage. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求你的 %@ Cookie 标头，以获取用量。点击“确定”继续。";
 "CodexBar will ask macOS Keychain for your Claude cookie header so it can fetch Claude web usage. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求你的 Claude Cookie 标头，以获取 Claude 网页用量。点击“确定”继续。";
-"CodexBar will ask macOS Keychain for your Cursor cookie header so it can fetch usage. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求你的 Cursor Cookie 标头，以获取用量。点击“确定”继续。";
-"CodexBar will ask macOS Keychain for your Factory cookie header so it can fetch usage. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求你的 Factory Cookie 标头，以获取用量。点击“确定”继续。";
 "CodexBar will ask macOS Keychain for your GitHub Copilot token so it can fetch usage. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求你的 GitHub Copilot token，以获取用量。点击“确定”继续。";
 "CodexBar will ask macOS Keychain for your Kimi auth token so it can fetch usage. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求你的 Kimi 认证 token，以获取用量。点击“确定”继续。";
 "CodexBar will ask macOS Keychain for your MiniMax API token so it can fetch usage. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求你的 MiniMax API token，以获取用量。点击“确定”继续。";
-"CodexBar will ask macOS Keychain for your MiniMax cookie header so it can fetch usage. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求你的 MiniMax Cookie 标头，以获取用量。点击“确定”继续。";
 "CodexBar will ask macOS Keychain for your OpenAI cookie header so it can fetch Codex dashboard extras. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求你的 OpenAI Cookie 标头，以获取 Codex 仪表盘额外数据。点击“确定”继续。";
-"CodexBar will ask macOS Keychain for your OpenCode cookie header so it can fetch usage. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求你的 OpenCode Cookie 标头，以获取用量。点击“确定”继续。";
 "CodexBar will ask macOS Keychain for your Synthetic API key so it can fetch usage. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求你的 Synthetic API 密钥，以获取用量。点击“确定”继续。";
 "CodexBar will ask macOS Keychain for your z.ai API token so it can fetch usage. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求你的 z.ai API token，以获取用量。点击“确定”继续。";
 "Could not open Cursor login in your browser." = "无法在浏览器中打开 Cursor 登录。";
@@ -1439,6 +1434,8 @@
 "menu_bar_layout_size" = "大小";
 "menu_bar_layout_size_small" = "小";
 "menu_bar_layout_size_regular" = "常规";
+"menu_bar_layout_size_large" = "大";
+"menu_bar_layout_monospaced_digits" = "等宽数字";
 "menu_bar_layout_gap" = "间距";
 "menu_bar_layout_gap_tight" = "紧凑";
 "menu_bar_layout_gap_regular" = "常规";
@@ -1940,7 +1937,7 @@
 "Refresh the profile before refreshing OpenAI web data." = "刷新 OpenAI Web 数据之前先刷新配置文件。";
 "Refreshing account status…" = "正在刷新帐户状态...";
 "Remaining budget compared with an ideal steady burn rate." = "比较剩余额度与理想的均匀使用速度。";
-"Renews: %@" = "续订时间：%@";
+"Plan renews: %@" = "套餐续订时间：%@";
 "Request quota" = "请求 配额";
 "Requesting login…" = "请求登录...";
 "Required. Enter a regular API key or a Management API key here. Management keys also enable account Activity on the official OpenRouter API." = "必填。在此处输入常规 API 密钥或管理 API 密钥。管理密钥还可以启用官方 OpenRouter API 上的帐户活动。";
@@ -2508,6 +2505,8 @@
 "Pace sign" = "使用节奏符号";
 "Ahead of pace is +" = "超出节奏为 +";
 "Reserve is +" = "余量为 +";
+"Back" = "后退";
+"Forward" = "前进";
 
 "cost_reset_inferred_tooltip" = "推断：%@ 不提供此日期。每月支出上限在每月 1 日 00:00 UTC 重置。";
 /* fal provider credentials */
@@ -2619,7 +2618,13 @@
 "Daily spend · %@" = "每日支出 · %@";
 "Applies to the selected token account “%@”. Each account keeps its own limits." = "适用于所选令牌账户“%@”。每个账户保留各自的限制。";
 "Applies to the OpenAI API key, not to token accounts." = "适用于 OpenAI API 密钥，不适用于令牌账户。";
+"CodexBar will ask macOS Keychain for the Muse Code login token so it can fetch your Muse Code subscription usage. Click OK to continue." = "CodexBar 将向 macOS 钥匙串请求 Muse Code 登录 token，以获取你的 Muse Code 订阅用量。点击“确定”继续。";
 /* Claude Platform provider */
 "API credit" = "API 额度";
 "Purchased credit" = "已购买额度";
 "Claude Platform exposes Console credit balance and monthly spend, not local token cost history." = "Claude Platform 显示 Console 额度余额和每月支出，而不是本地 token 成本历史记录。";
+
+/* Claude desktop cookie source */
+"Claude desktop app" = "Claude 桌面应用";
+"Use Claude desktop app cookies" = "使用 Claude 桌面应用的 Cookie";
+"For Web usage, follow the account signed into Claude.app instead of a browser." = "查询网页使用量时，使用 Claude.app 中登录的账户，而不是浏览器账户。";

@@ -670,6 +670,7 @@ extension UsageStore {
         snapshotOverride: UsageSnapshot? = nil,
         errorOverride: String? = nil,
         creditsOverride: CreditsSnapshot? = nil,
+        optionalUsageOverride: Bool? = nil,
         now: Date = Date()) -> CodexConsumerProjection?
     {
         guard provider == .codex else { return nil }
@@ -678,6 +679,7 @@ extension UsageStore {
             snapshotOverride: snapshotOverride,
             errorOverride: errorOverride,
             creditsOverride: creditsOverride,
+            optionalUsageOverride: optionalUsageOverride,
             now: now)
     }
 
@@ -686,6 +688,7 @@ extension UsageStore {
         snapshotOverride: UsageSnapshot? = nil,
         errorOverride: String? = nil,
         creditsOverride: CreditsSnapshot? = nil,
+        optionalUsageOverride: Bool? = nil,
         now: Date = Date()) -> CodexConsumerProjection
     {
         let snapshot = surface == .overrideCard ? snapshotOverride : snapshotOverride ?? self.snapshots[.codex]
@@ -702,7 +705,8 @@ extension UsageStore {
             dashboardAttachmentAuthorized: self.openAIDashboardAttachmentAuthorized,
             dashboardRequiresLogin: self.openAIDashboardRequiresLogin,
             now: now,
-            showOptionalCreditsAndExtraUsage: self.settings.showOptionalCreditsAndExtraUsage)
+            showOptionalCreditsAndExtraUsage:
+            optionalUsageOverride ?? self.settings.showOptionalCreditsAndExtraUsage)
         return CodexConsumerProjection.make(surface: surface, context: context)
     }
 

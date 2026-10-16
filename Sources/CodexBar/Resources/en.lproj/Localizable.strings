@@ -1156,17 +1156,12 @@
 "CodexBar found another managed account that already uses the current system account. Resolve the duplicate account before switching." = "CodexBar found another managed account that already uses the current system account. Resolve the duplicate account before switching.";
 "CodexBar will ask macOS Keychain for “%@” so it can decrypt browser cookies and authenticate your account. Click OK to continue." = "CodexBar will ask macOS Keychain for “%@” so it can decrypt browser cookies and authenticate your account. Click OK to continue.";
 "CodexBar will ask macOS Keychain for the Claude Code OAuth token so it can fetch your Claude usage. Click OK to continue." = "CodexBar will ask macOS Keychain for the Claude Code OAuth token so it can fetch your Claude usage. Click OK to continue.";
-"CodexBar will ask macOS Keychain for your Amp cookie header so it can fetch usage. Click OK to continue." = "CodexBar will ask macOS Keychain for your Amp cookie header so it can fetch usage. Click OK to continue.";
-"CodexBar will ask macOS Keychain for your Augment cookie header so it can fetch usage. Click OK to continue." = "CodexBar will ask macOS Keychain for your Augment cookie header so it can fetch usage. Click OK to continue.";
+"CodexBar will ask macOS Keychain for your %@ cookie header so it can fetch usage. Click OK to continue." = "CodexBar will ask macOS Keychain for your %@ cookie header so it can fetch usage. Click OK to continue.";
 "CodexBar will ask macOS Keychain for your Claude cookie header so it can fetch Claude web usage. Click OK to continue." = "CodexBar will ask macOS Keychain for your Claude cookie header so it can fetch Claude web usage. Click OK to continue.";
-"CodexBar will ask macOS Keychain for your Cursor cookie header so it can fetch usage. Click OK to continue." = "CodexBar will ask macOS Keychain for your Cursor cookie header so it can fetch usage. Click OK to continue.";
-"CodexBar will ask macOS Keychain for your Factory cookie header so it can fetch usage. Click OK to continue." = "CodexBar will ask macOS Keychain for your Factory cookie header so it can fetch usage. Click OK to continue.";
 "CodexBar will ask macOS Keychain for your GitHub Copilot token so it can fetch usage. Click OK to continue." = "CodexBar will ask macOS Keychain for your GitHub Copilot token so it can fetch usage. Click OK to continue.";
 "CodexBar will ask macOS Keychain for your Kimi auth token so it can fetch usage. Click OK to continue." = "CodexBar will ask macOS Keychain for your Kimi auth token so it can fetch usage. Click OK to continue.";
 "CodexBar will ask macOS Keychain for your MiniMax API token so it can fetch usage. Click OK to continue." = "CodexBar will ask macOS Keychain for your MiniMax API token so it can fetch usage. Click OK to continue.";
-"CodexBar will ask macOS Keychain for your MiniMax cookie header so it can fetch usage. Click OK to continue." = "CodexBar will ask macOS Keychain for your MiniMax cookie header so it can fetch usage. Click OK to continue.";
 "CodexBar will ask macOS Keychain for your OpenAI cookie header so it can fetch Codex dashboard extras. Click OK to continue." = "CodexBar will ask macOS Keychain for your OpenAI cookie header so it can fetch Codex dashboard extras. Click OK to continue.";
-"CodexBar will ask macOS Keychain for your OpenCode cookie header so it can fetch usage. Click OK to continue." = "CodexBar will ask macOS Keychain for your OpenCode cookie header so it can fetch usage. Click OK to continue.";
 "CodexBar will ask macOS Keychain for your Synthetic API key so it can fetch usage. Click OK to continue." = "CodexBar will ask macOS Keychain for your Synthetic API key so it can fetch usage. Click OK to continue.";
 "CodexBar will ask macOS Keychain for your z.ai API token so it can fetch usage. Click OK to continue." = "CodexBar will ask macOS Keychain for your z.ai API token so it can fetch usage. Click OK to continue.";
 "Could not open Cursor login in your browser." = "Could not open Cursor login in your browser.";
@@ -1445,6 +1440,8 @@
 "menu_bar_layout_size" = "Size";
 "menu_bar_layout_size_small" = "Small";
 "menu_bar_layout_size_regular" = "Regular";
+"menu_bar_layout_size_large" = "Large";
+"menu_bar_layout_monospaced_digits" = "Monospaced digits";
 "menu_bar_layout_gap" = "Gap";
 "menu_bar_layout_gap_tight" = "Tight";
 "menu_bar_layout_gap_regular" = "Regular";
@@ -1938,7 +1935,7 @@
 "Refresh the profile before refreshing OpenAI web data." = "Refresh the profile before refreshing OpenAI web data.";
 "Refreshing account status…" = "Refreshing account status…";
 "Remaining budget compared with an ideal steady burn rate." = "Remaining budget compared with an ideal steady burn rate.";
-"Renews: %@" = "Renews: %@";
+"Plan renews: %@" = "Plan renews: %@";
 "Request quota" = "Request quota";
 "Requesting login…" = "Requesting login…";
 "Required. Enter a regular API key or a Management API key here. Management keys also enable account Activity on the official OpenRouter API." = "Required. Enter a regular API key or a Management API key here. Management keys also enable account Activity on the official OpenRouter API.";
@@ -2519,6 +2516,8 @@
 "Pace sign" = "Pace sign";
 "Ahead of pace is +" = "Ahead of pace is +";
 "Reserve is +" = "Reserve is +";
+"Back" = "Back";
+"Forward" = "Forward";
 
 "cost_reset_inferred_tooltip" = "Inferred: %@ doesn't report this date. Monthly spend caps roll over at 00:00 UTC on the 1st.";
 /* fal provider credentials */
@@ -2632,7 +2631,13 @@
 "Daily spend · %@" = "Daily spend · %@";
 "Applies to the selected token account “%@”. Each account keeps its own limits." = "Applies to the selected token account “%@”. Each account keeps its own limits.";
 "Applies to the OpenAI API key, not to token accounts." = "Applies to the OpenAI API key, not to token accounts.";
+"CodexBar will ask macOS Keychain for the Muse Code login token so it can fetch your Muse Code subscription usage. Click OK to continue." = "CodexBar will ask macOS Keychain for the Muse Code login token so it can fetch your Muse Code subscription usage. Click OK to continue.";
 /* Claude Platform provider */
 "API credit" = "API credit";
 "Purchased credit" = "Purchased credit";
 "Claude Platform exposes Console credit balance and monthly spend, not local token cost history." = "Claude Platform exposes Console credit balance and monthly spend, not local token cost history.";
+
+/* Claude desktop cookie source */
+"Claude desktop app" = "Claude desktop app";
+"Use Claude desktop app cookies" = "Use Claude desktop app cookies";
+"For Web usage, follow the account signed into Claude.app instead of a browser." = "For Web usage, follow the account signed into Claude.app instead of a browser.";

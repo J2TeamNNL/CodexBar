@@ -142,8 +142,8 @@ struct BrowserCookiePromptContractTests {
         }
     }
 
-    @Test
-    func `unrelated cookie rows never request a Safe Storage key`() throws {
+    @Test(arguments: [Browser.brave, .claudeDesktop])
+    func `unrelated cookie rows never request a Safe Storage key`(browser: Browser) throws {
         let home = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: home, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: home) }
@@ -161,7 +161,7 @@ struct BrowserCookiePromptContractTests {
             nil,
             nil) == SQLITE_OK)
         let store = BrowserCookieStore(
-            browser: .brave,
+            browser: browser,
             profile: .init(id: home.path, name: "Synthetic"),
             kind: .network,
             label: "Synthetic Brave",
@@ -460,8 +460,8 @@ struct BrowserCookiePromptContractTests {
         }
     }
 
-    @Test
-    func `prompt free reads preserve the allowance and nested imports share it`() throws {
+    @Test(arguments: [Browser.brave, .claudeDesktop])
+    func `prompt free reads preserve the allowance and nested imports share it`(browser: Browser) throws {
         let keychain = FakeKeychain(promptFreeBrowser: .chrome)
         try self.withFakeKeychain {
             try KeychainAccessPreflight.withCheckGenericPasswordOverrideForTesting { _, _ in .allowed } operation: {
@@ -470,7 +470,7 @@ struct BrowserCookiePromptContractTests {
                         _ = try Self.readKey(for: .chrome, keychain: keychain)
                         #expect(keychain.interactiveQueries == 0)
                         try BrowserCookieAccessGate.withExplicitRetry {
-                            _ = try Self.readKey(for: .brave, keychain: keychain)
+                            _ = try Self.readKey(for: browser, keychain: keychain)
                         }
                         #expect(keychain.interactiveQueries == 1)
                         #expect(throws: BrowserCookieError.self) { try Self.readKey(for: .arc, keychain: keychain) }
@@ -480,6 +480,70 @@ struct BrowserCookiePromptContractTests {
             }
         }
         #expect(keychain.interactiveQueries == 1)
+    }
+
+    @Test
+    func `a Muse denial cannot prolong an expired browser cooldown`() {
+        BrowserCookieAccessGate.withIsolatedStateForTesting {
+            self.withFakeKeychain {
+                let now = Date(timeIntervalSince1970: 1_700_000_000)
+                BrowserCookieAccessGate.recordCredentialDenial(service: MuseCredentials.keychainService, now: now)
+                BrowserCookieAccessGate.recordDenied(for: .chrome, now: now.addingTimeInterval(-7 * 60 * 60))
+                #expect(!BrowserCookieAccessGate.hasActiveDenial(for: .chrome, now: now))
+                ProviderInteractionContext.$current.withValue(.userInitiated) {
+                    BrowserCookieAccessGate.withExplicitRetry {
+                        #expect(BrowserCookieAccessGate.shouldAttempt(.chrome, now: now))
+                        #expect(!BrowserCookieAccessGate.claimCredentialRead(
+                            service: MuseCredentials.keychainService, now: now))
+                    }
+                }
+            }
+        }
+    }
+
+    @Test(arguments: [false, true])
+    func `Muse and browser reads share the manual action allowance`(museFirst: Bool) throws {
+        let keychain = FakeKeychain()
+        let museReads = LockIsolated(0)
+        let read: @Sendable ([String: Any]) -> (OSStatus, Data?) = { query in
+            #expect(query[kSecUseAuthenticationUI as String] == nil)
+            museReads.setValue(museReads.value + 1)
+            return (errSecSuccess, Data(#"{"access_token":"dca:fixture-shared"}"#.utf8))
+        }
+        try BrowserCookieAccessGate.withIsolatedStateForTesting {
+            try self.withFakeKeychain {
+                try KeychainAccessPreflight.withCheckGenericPasswordOverrideForTesting { service, _ in
+                    service == MuseCredentials.keychainService ? .interactionRequired : .allowed
+                } operation: {
+                    try KeychainPromptHandler.withHandlerForTesting { context in
+                        #expect(context.service == MuseCredentials.keychainService)
+                    } operation: {
+                        try MuseCredentials.$keychainReadOverrideForTesting.withValue(read) {
+                            try ProviderInteractionContext.$current.withValue(.userInitiated) {
+                                try BrowserCookieAccessGate.withExplicitRetry {
+                                    let muse = {
+                                        try MuseCredentials.accessToken(
+                                            environment: [:],
+                                            homeDirectory: URL(fileURLWithPath: "/synthetic/muse-budget"))
+                                    }
+                                    if museFirst {
+                                        #expect(try muse() == "dca:fixture-shared")
+                                        #expect(throws: BrowserCookieError.self) {
+                                            try Self.readKey(for: .chrome, keychain: keychain)
+                                        }
+                                    } else {
+                                        _ = try Self.readKey(for: .chrome, keychain: keychain)
+                                        #expect(throws: MuseUsageError.keychainAccessNotGranted) { try muse() }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        #expect(museReads.value == (museFirst ? 1 : 0))
+        #expect(keychain.interactiveQueries == (museFirst ? 0 : 1))
     }
 
     @Test
@@ -506,20 +570,20 @@ struct BrowserCookiePromptContractTests {
         #expect(keychain.interactiveQueries == 1)
     }
 
-    @Test
-    func `an actual interactive denial blocks the next manual action`() {
+    @Test(arguments: [Browser.chrome, .claudeDesktop])
+    func `an actual interactive denial blocks the next manual action`(browser: Browser) {
         let keychain = FakeKeychain(deniesInteraction: true)
         self.withFakeKeychain {
             KeychainAccessPreflight.withCheckGenericPasswordOverrideForTesting { _, _ in .allowed } operation: {
                 ProviderInteractionContext.$current.withValue(.userInitiated) {
                     BrowserCookieAccessGate.withExplicitRetry {
-                        _ = try? Self.readKey(for: .chrome, keychain: keychain)
+                        _ = try? Self.readKey(for: browser, keychain: keychain)
                     }
-                    #expect(BrowserCookieAccessGate.hasActiveDenial(for: .chrome))
+                    #expect(BrowserCookieAccessGate.hasActiveDenial(for: browser))
                     BrowserCookieAccessGate.withExplicitRetry {
-                        #expect(!BrowserCookieAccessGate.shouldAttempt(.chrome))
+                        #expect(!BrowserCookieAccessGate.shouldAttempt(browser))
                         #expect(!BrowserCookieAccessGate.shouldAttempt(.brave))
-                        _ = try? Self.readKey(for: .chrome, keychain: keychain)
+                        _ = try? Self.readKey(for: browser, keychain: keychain)
                     }
                 }
             }

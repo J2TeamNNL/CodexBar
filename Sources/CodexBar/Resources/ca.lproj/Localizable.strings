@@ -1009,17 +1009,12 @@
 "CodexBar found another managed account that already uses the current system account. Resolve the duplicate account before switching." = "CodexBar ha trobat un altre compte gestionat que ja utilitza el compte del sistema actual. Resoleu el compte duplicat abans de canviar.";
 "CodexBar will ask macOS Keychain for “%@” so it can decrypt browser cookies and authenticate your account. Click OK to continue." = "CodexBar demanarà a Clauer de macOS “%@” per desxifrar galetes del navegador i autenticar el compte. Premeu D'acord per continuar.";
 "CodexBar will ask macOS Keychain for the Claude Code OAuth token so it can fetch your Claude usage. Click OK to continue." = "CodexBar demanarà a Clauer de macOS el token OAuth de Claude Code per obtenir l'ús de Claude. Premeu D'acord per continuar.";
-"CodexBar will ask macOS Keychain for your Amp cookie header so it can fetch usage. Click OK to continue." = "CodexBar demanarà a Clauer de macOS la capçalera Cookie d'Amp per obtenir l'ús. Premeu D'acord per continuar.";
-"CodexBar will ask macOS Keychain for your Augment cookie header so it can fetch usage. Click OK to continue." = "CodexBar demanarà a Clauer de macOS la capçalera Cookie d'Augment per obtenir l'ús. Premeu D'acord per continuar.";
+"CodexBar will ask macOS Keychain for your %@ cookie header so it can fetch usage. Click OK to continue." = "CodexBar demanarà a Clauer de macOS la capçalera Cookie corresponent a %@ per obtenir l'ús. Premeu D'acord per continuar.";
 "CodexBar will ask macOS Keychain for your Claude cookie header so it can fetch Claude web usage. Click OK to continue." = "CodexBar demanarà a Clauer de macOS la capçalera Cookie de Claude per obtenir l'ús web de Claude. Premeu D'acord per continuar.";
-"CodexBar will ask macOS Keychain for your Cursor cookie header so it can fetch usage. Click OK to continue." = "CodexBar demanarà a Clauer de macOS la capçalera Cookie de Cursor per obtenir l'ús. Premeu D'acord per continuar.";
-"CodexBar will ask macOS Keychain for your Factory cookie header so it can fetch usage. Click OK to continue." = "CodexBar demanarà a Clauer de macOS la capçalera Cookie de Factory per obtenir l'ús. Premeu D'acord per continuar.";
 "CodexBar will ask macOS Keychain for your GitHub Copilot token so it can fetch usage. Click OK to continue." = "CodexBar demanarà a Clauer de macOS el token de GitHub Copilot per obtenir l'ús. Premeu D'acord per continuar.";
 "CodexBar will ask macOS Keychain for your Kimi auth token so it can fetch usage. Click OK to continue." = "CodexBar demanarà a Clauer de macOS el token d'autenticació de Kimi per obtenir l'ús. Premeu D'acord per continuar.";
 "CodexBar will ask macOS Keychain for your MiniMax API token so it can fetch usage. Click OK to continue." = "CodexBar demanarà a Clauer de macOS el token API de MiniMax per obtenir l'ús. Premeu D'acord per continuar.";
-"CodexBar will ask macOS Keychain for your MiniMax cookie header so it can fetch usage. Click OK to continue." = "CodexBar demanarà a Clauer de macOS la capçalera Cookie de MiniMax per obtenir l'ús. Premeu D'acord per continuar.";
 "CodexBar will ask macOS Keychain for your OpenAI cookie header so it can fetch Codex dashboard extras. Click OK to continue." = "CodexBar demanarà a Clauer de macOS la capçalera Cookie d'OpenAI per obtenir extres del tauler de Codex. Premeu D'acord per continuar.";
-"CodexBar will ask macOS Keychain for your OpenCode cookie header so it can fetch usage. Click OK to continue." = "CodexBar demanarà a Clauer de macOS la capçalera Cookie d'OpenCode per obtenir l'ús. Premeu D'acord per continuar.";
 "CodexBar will ask macOS Keychain for your Synthetic API key so it can fetch usage. Click OK to continue." = "CodexBar demanarà a Clauer de macOS la clau API de Synthetic per obtenir l'ús. Premeu D'acord per continuar.";
 "CodexBar will ask macOS Keychain for your z.ai API token so it can fetch usage. Click OK to continue." = "CodexBar demanarà a Clauer de macOS el token API de z.ai per obtenir l'ús. Premeu D'acord per continuar.";
 "Could not open Cursor login in your browser." = "No s'ha pogut obrir l'inici de sessió de Cursor al navegador.";
@@ -1440,6 +1435,8 @@
 "menu_bar_layout_size" = "Mida";
 "menu_bar_layout_size_small" = "Petita";
 "menu_bar_layout_size_regular" = "Normal";
+"menu_bar_layout_size_large" = "Gran";
+"menu_bar_layout_monospaced_digits" = "Dígits monoespaiats";
 "menu_bar_layout_gap" = "Espaiat";
 "menu_bar_layout_gap_tight" = "Estret";
 "menu_bar_layout_gap_regular" = "Normal";
@@ -1938,7 +1935,7 @@
 "Refresh the profile before refreshing OpenAI web data." = "Actualitzeu el perfil abans d'actualitzar les dades web de OpenAI.";
 "Refreshing account status…" = "S'està actualitzant l'estat del compte...";
 "Remaining budget compared with an ideal steady burn rate." = "Pressupost restant en comparació amb una taxa de combustió constant ideal.";
-"Renews: %@" = "Renova: %@";
+"Plan renews: %@" = "El pla es renova: %@";
 "Request quota" = "Demana quota";
 "Requesting login…" = "S'està sol·licitant l'inici de sessió...";
 "Required. Enter a regular API key or a Management API key here. Management keys also enable account Activity on the official OpenRouter API." = "Obligatori. Introduïu una clau normal API o una clau de gestió API aquí. Les claus de gestió també permeten l'activitat del compte al OpenRouter API oficial.";
@@ -2519,6 +2516,8 @@
 "Pace sign" = "Signe del ritme";
 "Ahead of pace is +" = "Per sobre del ritme és +";
 "Reserve is +" = "La reserva és +";
+"Back" = "Enrere";
+"Forward" = "Endavant";
 
 "cost_reset_inferred_tooltip" = "Inferit: %@ no informa d'aquesta data. Els límits de despesa mensuals es reinicien a les 00:00 UTC l'1 de cada mes.";
 /* fal provider credentials */
@@ -2629,7 +2628,13 @@
 "Daily spend · %@" = "Despesa diària · %@";
 "Applies to the selected token account “%@”. Each account keeps its own limits." = "S’aplica al compte de token seleccionat «%@». Cada compte conserva els seus propis límits.";
 "Applies to the OpenAI API key, not to token accounts." = "S’aplica a la clau de l’API d’OpenAI, no als comptes de token.";
+"CodexBar will ask macOS Keychain for the Muse Code login token so it can fetch your Muse Code subscription usage. Click OK to continue." = "CodexBar demanarà a Clauer de macOS el token d'inici de sessió de Muse Code per obtenir l'ús de la teva subscripció a Muse Code. Premeu D'acord per continuar.";
 /* Claude Platform provider */
 "API credit" = "Crèdit d'API";
 "Purchased credit" = "Crèdit comprat";
 "Claude Platform exposes Console credit balance and monthly spend, not local token cost history." = "Claude Platform mostra el saldo de crèdit i la despesa mensual de la Console, no l'historial de costos local de tokens.";
+
+/* Claude desktop cookie source */
+"Claude desktop app" = "Aplicació d’escriptori de Claude";
+"Use Claude desktop app cookies" = "Utilitza les galetes de l’aplicació d’escriptori de Claude";
+"For Web usage, follow the account signed into Claude.app instead of a browser." = "Per a l’ús web, fes servir el compte que ha iniciat sessió a Claude.app en lloc del navegador.";

@@ -1174,17 +1174,12 @@
 "CodexBar found another managed account that already uses the current system account. Resolve the duplicate account before switching." = "CodexBar menemukan akun terkelola lain yang sudah menggunakan akun sistem saat ini. Selesaikan akun duplikat sebelum beralih.";
 "CodexBar will ask macOS Keychain for \U201c%@\U201d so it can decrypt browser cookies and authenticate your account. Click OK to continue." = "CodexBar akan meminta Keychain macOS untuk \U201c%@\U201d agar dapat mendekripsi cookie browser dan mengautentikasi akun Anda. Klik OK untuk melanjutkan.";
 "CodexBar will ask macOS Keychain for the Claude Code OAuth token so it can fetch your Claude usage. Click OK to continue." = "CodexBar akan meminta Keychain macOS untuk token OAuth Claude Code agar dapat mengambil penggunaan Claude Anda. Klik OK untuk melanjutkan.";
-"CodexBar will ask macOS Keychain for your Amp cookie header so it can fetch usage. Click OK to continue." = "CodexBar akan meminta Keychain macOS untuk header cookie Amp Anda agar dapat mengambil penggunaan. Klik OK untuk melanjutkan.";
-"CodexBar will ask macOS Keychain for your Augment cookie header so it can fetch usage. Click OK to continue." = "CodexBar akan meminta Keychain macOS untuk header cookie Augment Anda agar dapat mengambil penggunaan. Klik OK untuk melanjutkan.";
+"CodexBar will ask macOS Keychain for your %@ cookie header so it can fetch usage. Click OK to continue." = "CodexBar akan meminta Keychain macOS untuk header cookie %@ Anda agar dapat mengambil penggunaan. Klik OK untuk melanjutkan.";
 "CodexBar will ask macOS Keychain for your Claude cookie header so it can fetch Claude web usage. Click OK to continue." = "CodexBar akan meminta Keychain macOS untuk header cookie Claude Anda agar dapat mengambil penggunaan web Claude. Klik OK untuk melanjutkan.";
-"CodexBar will ask macOS Keychain for your Cursor cookie header so it can fetch usage. Click OK to continue." = "CodexBar akan meminta Keychain macOS untuk header cookie Cursor Anda agar dapat mengambil penggunaan. Klik OK untuk melanjutkan.";
-"CodexBar will ask macOS Keychain for your Factory cookie header so it can fetch usage. Click OK to continue." = "CodexBar akan meminta Keychain macOS untuk header cookie Factory Anda agar dapat mengambil penggunaan. Klik OK untuk melanjutkan.";
 "CodexBar will ask macOS Keychain for your GitHub Copilot token so it can fetch usage. Click OK to continue." = "CodexBar akan meminta Keychain macOS untuk token GitHub Copilot Anda agar dapat mengambil penggunaan. Klik OK untuk melanjutkan.";
 "CodexBar will ask macOS Keychain for your Kimi auth token so it can fetch usage. Click OK to continue." = "CodexBar akan meminta Keychain macOS untuk token auth Kimi Anda agar dapat mengambil penggunaan. Klik OK untuk melanjutkan.";
 "CodexBar will ask macOS Keychain for your MiniMax API token so it can fetch usage. Click OK to continue." = "CodexBar akan meminta Keychain macOS untuk token API MiniMax Anda agar dapat mengambil penggunaan. Klik OK untuk melanjutkan.";
-"CodexBar will ask macOS Keychain for your MiniMax cookie header so it can fetch usage. Click OK to continue." = "CodexBar akan meminta Keychain macOS untuk header cookie MiniMax Anda agar dapat mengambil penggunaan. Klik OK untuk melanjutkan.";
 "CodexBar will ask macOS Keychain for your OpenAI cookie header so it can fetch Codex dashboard extras. Click OK to continue." = "CodexBar akan meminta Keychain macOS untuk header cookie OpenAI Anda agar dapat mengambil ekstra dasbor Codex. Klik OK untuk melanjutkan.";
-"CodexBar will ask macOS Keychain for your OpenCode cookie header so it can fetch usage. Click OK to continue." = "CodexBar akan meminta Keychain macOS untuk header cookie OpenCode Anda agar dapat mengambil penggunaan. Klik OK untuk melanjutkan.";
 "CodexBar will ask macOS Keychain for your Synthetic API key so it can fetch usage. Click OK to continue." = "CodexBar akan meminta Keychain macOS untuk kunci API Synthetic Anda agar dapat mengambil penggunaan. Klik OK untuk melanjutkan.";
 "CodexBar will ask macOS Keychain for your z.ai API token so it can fetch usage. Click OK to continue." = "CodexBar akan meminta Keychain macOS untuk token API z.ai Anda agar dapat mengambil penggunaan. Klik OK untuk melanjutkan.";
 "Could not open Cursor login in your browser." = "Tidak dapat membuka login Cursor di browser Anda.";
@@ -1437,6 +1432,8 @@
 "menu_bar_layout_size" = "Ukuran";
 "menu_bar_layout_size_small" = "Kecil";
 "menu_bar_layout_size_regular" = "Reguler";
+"menu_bar_layout_size_large" = "Besar";
+"menu_bar_layout_monospaced_digits" = "Digit lebar tetap";
 "menu_bar_layout_gap" = "Jarak";
 "menu_bar_layout_gap_tight" = "Rapat";
 "menu_bar_layout_gap_regular" = "Reguler";
@@ -1937,7 +1934,7 @@
 "Refresh the profile before refreshing OpenAI web data." = "Segarkan profil sebelum menyegarkan data web OpenAI.";
 "Refreshing account status…" = "Menyegarkan status akun…";
 "Remaining budget compared with an ideal steady burn rate." = "Anggaran yang tersisa dibandingkan dengan tingkat pembakaran stabil yang ideal.";
-"Renews: %@" = "Diperbarui: %@";
+"Plan renews: %@" = "Paket diperbarui: %@";
 "Request quota" = "Minta Kuota";
 "Requesting login…" = "Meminta masuk…";
 "Required. Enter a regular API key or a Management API key here. Management keys also enable account Activity on the official OpenRouter API." = "Diperlukan. Masukkan kunci API biasa atau kunci Manajemen API di sini. Kunci manajemen juga mengaktifkan Aktivitas akun di OpenRouter API resmi.";
@@ -2518,6 +2515,8 @@
 "Pace sign" = "Tanda laju penggunaan";
 "Ahead of pace is +" = "Di atas laju adalah +";
 "Reserve is +" = "Cadangan adalah +";
+"Back" = "Kembali";
+"Forward" = "Maju";
 
 "cost_reset_inferred_tooltip" = "Diperkirakan: %@ tidak melaporkan tanggal ini. Batas pengeluaran bulanan direset pada pukul 00:00 UTC setiap tanggal 1.";
 /* fal provider credentials */
@@ -2628,7 +2627,13 @@
 "Daily spend · %@" = "Pengeluaran harian · %@";
 "Applies to the selected token account “%@”. Each account keeps its own limits." = "Berlaku untuk akun token yang dipilih “%@”. Setiap akun menyimpan batasnya sendiri.";
 "Applies to the OpenAI API key, not to token accounts." = "Berlaku untuk kunci API OpenAI, bukan untuk akun token.";
+"CodexBar will ask macOS Keychain for the Muse Code login token so it can fetch your Muse Code subscription usage. Click OK to continue." = "CodexBar akan meminta token login Muse Code dari Keychain macOS agar dapat mengambil penggunaan langganan Muse Code Anda. Klik OK untuk melanjutkan.";
 /* Claude Platform provider */
 "API credit" = "Kredit API";
 "Purchased credit" = "Kredit yang dibeli";
 "Claude Platform exposes Console credit balance and monthly spend, not local token cost history." = "Claude Platform menampilkan saldo kredit dan pembelanjaan bulanan Console, bukan riwayat biaya token lokal.";
+
+/* Claude desktop cookie source */
+"Claude desktop app" = "Aplikasi desktop Claude";
+"Use Claude desktop app cookies" = "Gunakan cookie aplikasi desktop Claude";
+"For Web usage, follow the account signed into Claude.app instead of a browser." = "Untuk penggunaan web, ikuti akun yang masuk di Claude.app, bukan akun di browser.";

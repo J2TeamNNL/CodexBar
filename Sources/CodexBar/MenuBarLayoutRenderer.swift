@@ -127,6 +127,7 @@ struct MenuBarLayoutRenderExtra: Hashable {
 
 struct MenuBarLayoutRenderOptions: Hashable {
     let size: MenuBarLayoutSize
+    let monospacedDigits: Bool
     let colorPace: Bool
     let colorByProvider: Bool
     let highContrast: Bool
@@ -163,9 +164,11 @@ struct MenuBarLayoutRenderOptions: Hashable {
         verticalAdjustment: Int = 0,
         colorPace: Bool = false,
         colorByProvider: Bool = false,
-        forceStackedStyle: Bool = false)
+        forceStackedStyle: Bool = false,
+        monospacedDigits: Bool = false)
     {
         self.size = size
+        self.monospacedDigits = monospacedDigits
         self.colorPace = colorPace
         self.colorByProvider = colorByProvider
         self.highContrast = highContrast
@@ -185,6 +188,7 @@ struct MenuBarLayoutRenderKey: Hashable {
     let layout: MenuBarLayout
     let data: MenuBarLayoutRenderData
     let size: MenuBarLayoutSize
+    let monospacedDigits: Bool
     let colorPace: Bool
     let colorByProvider: Bool
     let highContrast: Bool
@@ -324,6 +328,7 @@ final class MenuBarLayoutRenderer {
             layout: layout,
             data: data,
             size: options.size,
+            monospacedDigits: options.monospacedDigits,
             colorPace: options.colorPace,
             colorByProvider: options.colorByProvider,
             highContrast: options.highContrast,
@@ -386,7 +391,7 @@ final class MenuBarLayoutRenderer {
             attributedTitle: result,
             accessibilityLabel: accessibilityLabel,
             leadingIcon: nil,
-            statusImage: nil)
+            statusImage: Self.statusImage(title: result, foregroundColor: .controlTextColor))
     }
 
     private static func namingProvider(
@@ -432,7 +437,10 @@ final class MenuBarLayoutRenderer {
         Self.removeDuplicateBalanceResets(from: &renderedLines, data: data)
 
         let isStacked = options.forceStackedStyle || renderedLines.count == 2
-        let font = NSFont.systemFont(ofSize: Self.fontSize(size: options.size, isStacked: isStacked))
+        let fontSize = Self.fontSize(size: options.size, isStacked: isStacked)
+        let font = options.monospacedDigits
+            ? NSFont.monospacedDigitSystemFont(ofSize: fontSize, weight: .regular)
+            : NSFont.systemFont(ofSize: fontSize)
         let providerTintColor = Self.effectiveProviderTintColor(for: data.provider, options: options)
         let foregroundColor = if let providerTintColor {
             providerTintColor
@@ -446,8 +454,9 @@ final class MenuBarLayoutRenderer {
         let isTintActive = providerTintColor != nil
         let paragraphStyle = NSMutableParagraphStyle()
         if isStacked {
-            paragraphStyle.minimumLineHeight = 9.5
-            paragraphStyle.maximumLineHeight = 9.5
+            let lineHeight: CGFloat = options.size == .large ? 11 : 9.5
+            paragraphStyle.minimumLineHeight = lineHeight
+            paragraphStyle.maximumLineHeight = lineHeight
             paragraphStyle.lineSpacing = -1
         }
         var attributes: [NSAttributedString.Key: Any] = [
@@ -476,6 +485,13 @@ final class MenuBarLayoutRenderer {
             icon.map { Self.offsetLeadingIcon($0, adjustment: options.verticalAdjustment) }
         } else {
             nil
+        }
+
+        if isStacked, options.size == .large, leadingIcon == nil, icon != nil,
+           renderedLines.joined().contains(.icon)
+        {
+            // Inline attachments need less baseline lowering to fit both rows in the 22pt status bar.
+            attributes[.baselineOffset] = Self.stackedBaselineOffset + 2 + CGFloat(options.verticalAdjustment)
         }
 
         for (lineIndex, renderedLine) in renderedLines.enumerated() {
@@ -529,8 +545,8 @@ final class MenuBarLayoutRenderer {
             attributedTitle: result,
             accessibilityLabel: accessibilityLabel,
             leadingIcon: leadingIcon,
-            statusImage: !options.highContrast && !options.isStale && !isStacked && !isTintActive
-                && !renderedLines.joined().contains(.icon)
+            statusImage: !options.highContrast && !options.isStale && !isTintActive && leadingIcon == nil
+                && result.string.filter(\.isNewline).count == max(0, renderedLines.count - 1)
                 ? Self.statusImage(title: result, foregroundColor: foregroundColor)
                 : nil)
     }
@@ -580,16 +596,16 @@ final class MenuBarLayoutRenderer {
     }
 
     private static func statusImage(title: NSAttributedString, foregroundColor: NSColor) -> NSImage? {
-        guard title.length > 0, !title.string.contains(where: \.isNewline) else { return nil }
-        // Templates discard color. Preserve both explicitly colored text and fallback emoji glyphs.
+        guard title.length > 0 else { return nil }
+        // Preserve colored glyphs and attachments; monochrome attachment masks may join the template.
         let line = CTLineCreateWithAttributedString(title)
         guard let runs = CTLineGetGlyphRuns(line) as? [CTRun] else { return nil }
         for run in runs {
-            let attributes = CTRunGetAttributes(run) as NSDictionary
-            let range = CTRunGetStringRange(run)
-            let color = title.attribute(.foregroundColor, at: range.location, effectiveRange: nil) as? NSColor
-            guard color == foregroundColor,
-                  let font = attributes[kCTFontAttributeName] as? NSFont,
+            let runAttributes = CTRunGetAttributes(run) as NSDictionary
+            let attributes = title.attributes(at: CTRunGetStringRange(run).location, effectiveRange: nil)
+            guard attributes[.foregroundColor] as? NSColor == foregroundColor,
+                  (attributes[.attachment] as? NSTextAttachment)?.image?.isTemplate != false,
+                  let font = runAttributes[kCTFontAttributeName] as? NSFont,
                   !CTFontGetSymbolicTraits(font as CTFont).contains(.traitColorGlyphs)
             else { return nil }
         }
@@ -1170,12 +1186,22 @@ final class MenuBarLayoutRenderer {
         guard minutes.isMultiple(of: 60) else { return "\(minutes)m" }
         return "\(minutes / 60)h"
     }
+}
 
+extension MenuBarLayoutRenderer {
     private static func fontSize(size: MenuBarLayoutSize, isStacked: Bool) -> CGFloat {
         if isStacked {
-            return size == .small ? 8 : 9
+            return switch size {
+            case .small: 8
+            case .regular: 9
+            case .large: 10
+            }
         }
-        return size == .small ? 11 : NSFont.systemFontSize
+        return switch size {
+        case .small: 11
+        case .regular: NSFont.systemFontSize
+        case .large: 14
+        }
     }
 
     private static func iconHeight(size: MenuBarLayoutSize, isStacked: Bool) -> CGFloat {
@@ -1184,9 +1210,7 @@ final class MenuBarLayoutRenderer {
         }
         return size == .small ? 14 : 18
     }
-}
 
-extension MenuBarLayoutRenderer {
     /// Tokens-per-minute text and graph, kept out of the class body's main switch.
     private static func renderThroughputItem(
         _ item: MenuBarLayoutToken,
